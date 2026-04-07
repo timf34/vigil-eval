@@ -1,23 +1,263 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "Vigil", description = "Evaluating how AI assistants handle conversations with mentally vulnerable users." } = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <title>{title}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <div class="nav-inner">
+        <a href="/" class="nav-logo">
+          <img src="/flower.svg" alt="" class="nav-flower" aria-hidden="true" />
+          <span class="nav-title">vigil</span>
+        </a>
+        <div class="nav-links">
+          <a href="/">Leaderboard</a>
+          <a href="/blog">Research</a>
+          <a href="https://github.com/timf34/vigil" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-ascii" aria-hidden="true">
+          <pre>{`    *  .  *
+   .\\  |  /.
+  — · \\|/ · —
+   ·\` ';' \`·
+    '/ | \\'
+       |
+  ,.;,|;.,;,.`}</pre>
+        </div>
+        <div class="footer-content">
+          <p class="footer-tagline">Vigil watches so we can care better.</p>
+          <p class="footer-links">
+            <a href="https://github.com/timf34/vigil" target="_blank" rel="noopener">Source</a>
+            <span class="footer-sep">&middot;</span>
+            <a href="/blog">Research</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+  /* ===== CSS Reset & Variables ===== */
+  :root {
+    --cream: #faf6f1;
+    --cream-warm: #f5ede3;
+    --parchment: #ece4d8;
+    --ink: #2c2418;
+    --ink-soft: #5c5040;
+    --ink-muted: #8a7e6e;
+    --ink-faint: #b8ad9e;
+    --sage: #6b7c5e;
+    --sage-light: #8a9e7a;
+    --sage-pale: #dde6d5;
+    --amber: #c48a3f;
+    --amber-light: #e8b86d;
+    --amber-pale: #f5e6cc;
+    --rose: #c4665e;
+    --rose-light: #d98a83;
+    --rose-pale: #f5ddd9;
+    --green-good: #5e8a5e;
+    --yellow-mid: #b8963f;
+    --orange-warn: #c47a3f;
+    --red-bad: #b85a4a;
+
+    --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --font-mono: 'DM Mono', 'Menlo', 'Consolas', monospace;
+
+    --max-width: 1080px;
+    --max-width-wide: 1200px;
+    --gutter: clamp(1rem, 4vw, 3rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-serif);
+    color: var(--ink);
+    background-color: var(--cream);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  a {
+    color: var(--sage);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  a:hover {
+    color: var(--ink);
+  }
+
+  ::selection {
+    background: var(--amber-pale);
+    color: var(--ink);
+  }
+
+  /* ===== Navigation ===== */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250, 246, 241, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--parchment);
+  }
+
+  .nav-inner {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 0.6rem var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-logo:hover { color: var(--ink); }
+
+  .nav-flower {
+    height: 28px;
+    width: auto;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .nav-logo:hover .nav-flower {
+    opacity: 1;
+  }
+
+  .nav-title {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: lowercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  .nav-links a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: color 0.15s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--ink);
+  }
+
+  /* ===== Main ===== */
+  main {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  /* ===== Footer ===== */
+  .site-footer {
+    margin-top: 6rem;
+    border-top: 1px solid var(--parchment);
+    background: var(--cream-warm);
+  }
+
+  .footer-inner {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 3rem var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .footer-ascii pre {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    line-height: 1.15;
+    color: var(--ink-faint);
+    margin: 0;
+  }
+
+  .footer-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-links {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  .footer-links a {
+    color: var(--ink-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .footer-links a:hover { color: var(--ink); }
+
+  .footer-sep { margin: 0 0.5rem; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    .nav-links { gap: 1rem; font-size: 0.75rem; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-ascii { display: none; }
+  }
 </style>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" width="80" height="120">
+  <!-- Hand-drawn style flower using organic paths -->
+  <!-- Muted sage green palette to match site -->
+
+  <style>
+    .stem { fill: none; stroke: #6b7c5e; stroke-width: 1.5; stroke-linecap: round; }
+    .leaf { fill: none; stroke: #6b7c5e; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+    .petal { fill: none; stroke: #8a7e6e; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+    .center { fill: #c48a3f; opacity: 0.6; }
+    .dot { fill: #6b7c5e; opacity: 0.4; }
+  </style>
+
+  <!-- Stem — slightly wobbly line -->
+  <path class="stem" d="M 40 118 C 40 110, 39 95, 40 80 C 41 70, 39 62, 40 55" />
+
+  <!-- Left leaf — lower on stem, shorter reach -->
+  <path class="leaf" d="M 39 98 C 33 96, 25 94, 22 90" />
+  <path class="leaf" d="M 39 98 C 34 94, 27 93, 22 90" />
+
+  <!-- Right leaf — lower on stem, shorter reach -->
+  <path class="leaf" d="M 41 90 C 47 88, 54 87, 58 84" />
+  <path class="leaf" d="M 41 90 C 46 86, 53 85, 58 84" />
+
+  <!-- Petals — five slightly irregular elliptical arcs -->
+  <!-- Top petal -->
+  <path class="petal" d="M 40 52 C 36 44, 32 32, 35 24 C 38 18, 42 18, 45 24 C 48 32, 44 44, 40 52" />
+
+  <!-- Top-right petal -->
+  <path class="petal" d="M 40 52 C 46 46, 56 40, 62 38 C 66 36, 68 40, 64 44 C 58 50, 48 50, 40 52" />
+
+  <!-- Bottom-right petal -->
+  <path class="petal" d="M 40 52 C 46 56, 54 62, 58 68 C 60 72, 56 74, 52 70 C 46 64, 44 58, 40 52" />
+
+  <!-- Bottom-left petal -->
+  <path class="petal" d="M 40 52 C 34 56, 26 62, 22 68 C 20 72, 24 74, 28 70 C 34 64, 36 58, 40 52" />
+
+  <!-- Top-left petal -->
+  <path class="petal" d="M 40 52 C 34 46, 24 40, 18 38 C 14 36, 12 40, 16 44 C 22 50, 32 50, 40 52" />
+
+  <!-- Center -->
+  <circle class="center" cx="40" cy="52" r="4" />
+
+  <!-- Small dots/pollen -->
+  <circle class="dot" cx="38" cy="50" r="0.8" />
+  <circle class="dot" cx="42" cy="50" r="0.8" />
+  <circle class="dot" cx="40" cy="54" r="0.8" />
+  <circle class="dot" cx="37" cy="53" r="0.7" />
+  <circle class="dot" cx="43" cy="53" r="0.7" />
+</svg>

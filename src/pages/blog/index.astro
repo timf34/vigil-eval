@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Research — Vigil" description="Research and methodology behind Vigil, an AI safety evaluation pipeline for mental health conversations.">
+
+  <section class="blog-header">
+    <h1 class="blog-title">Research</h1>
+    <p class="blog-subtitle">
+      Methodology, findings, and technical details behind Vigil.
+    </p>
+  </section>
+
+  <section class="posts-section">
+    <article class="post-card featured">
+      <div class="post-badge">Coming soon</div>
+      <h2 class="post-title">Vigil: An Evaluation Framework for AI Safety in Mental Health Conversations</h2>
+      <p class="post-excerpt">
+        A comprehensive look at why existing AI safety benchmarks fail to capture the nuance
+        of mental health interactions, and how Vigil's four-stage pipeline addresses this gap.
+        Covers the design philosophy, evaluation dimensions, and initial findings across
+        eight vulnerability states.
+      </p>
+      <div class="post-meta">
+        <span class="post-tag">Methodology</span>
+        <span class="post-tag">Findings</span>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <div class="post-badge">Coming soon</div>
+      <h2 class="post-title">Technical Deep Dive: Multi-Turn Scenario Generation and Evidence-Based Judging</h2>
+      <p class="post-excerpt">
+        How Vigil generates realistic multi-turn conversations, validates scenario diversity,
+        and performs two-phase evidence-based scoring. Includes implementation details,
+        prompt engineering decisions, and lessons learned from iterating on the pipeline.
+      </p>
+      <div class="post-meta">
+        <span class="post-tag">Technical</span>
+        <span class="post-tag">Implementation</span>
+      </div>
+    </article>
+  </section>
+
+</Layout>
+
+<style>
+  .blog-header {
+    padding: 3rem 0 2rem;
+    max-width: 720px;
+  }
+
+  .blog-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-subtitle {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .posts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 720px;
+    margin-bottom: 4rem;
+  }
+
+  .post-card {
+    background: white;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    padding: 1.8rem 2rem;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .post-card:hover {
+    border-color: var(--ink-faint);
+    box-shadow: 0 2px 12px rgba(44, 36, 24, 0.05);
+  }
+
+  .post-card.featured {
+    border-left: 3px solid var(--sage);
+  }
+
+  .post-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    background: var(--cream-warm);
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+  }
+
+  .post-title {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 0.7rem;
+  }
+
+  .post-excerpt {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .post-tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    background: var(--cream-warm);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+  }
+</style>

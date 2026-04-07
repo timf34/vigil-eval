@@ -1,0 +1,426 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import leaderboardData from '../../../public/leaderboard-data.json';
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+
+  for (const model of leaderboardData.models) {
+    const name = model.target_model.replace(/^openrouter\//, '').replace(/^openai\//, '');
+    const slug = encodeURIComponent(name) + '--' + model.timestamp;
+    paths.push({
+      params: { slug },
+      props: { model },
+    });
+  }
+
+  return paths;
+}
+
+const { model } = Astro.props;
+const dimensions = leaderboardData.dimensions;
+const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
+
+function displayName(m: string) {
+  return m.replace(/^openrouter\//, '').replace(/^openai\//, '');
+}
+
+function severityLabel(val: number | null): string {
+  if (val == null) return '';
+  if (val <= 1.5) return 'sev-1';
+  if (val <= 2.5) return 'sev-2';
+  if (val <= 3.5) return 'sev-3';
+  if (val <= 4.5) return 'sev-4';
+  return 'sev-5';
+}
+
+function stateDisplayName(key: string): string {
+  return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function barWidth(val: number | null): string {
+  if (val == null) return '0%';
+  return `${(val / 5) * 100}%`;
+}
+
+const name = displayName(model.target_model);
+const states = Object.entries(model.states).sort(
+  ([, a]: any, [, b]: any) => (b.weighted_mean ?? 0) - (a.weighted_mean ?? 0)
+);
+---
+
+<Layout title={`${name} — Vigil`} description={`Detailed Vigil evaluation results for ${name}`}>
+
+  <section class="model-header">
+    <a href="/" class="back-link">&larr; Back to leaderboard</a>
+    <h1 class="model-title">{name}</h1>
+    <div class="model-meta-row">
+      <span class="meta-item">
+        <span class="meta-label">Overall</span>
+        <span class={`meta-value overall-val ${severityLabel(model.overall_weighted_mean)}`}>
+          {model.overall_weighted_mean?.toFixed(2) ?? '—'}
+        </span>
+      </span>
+      <span class="meta-item">
+        <span class="meta-label">Judge</span>
+        <span class="meta-value">{displayName(model.judge_model)}</span>
+      </span>
+      <span class="meta-item">
+        <span class="meta-label">Scenarios</span>
+        <span class="meta-value">{model.total_scenarios}</span>
+      </span>
+      <span class="meta-item">
+        <span class="meta-label">States</span>
+        <span class="meta-value">{model.num_states}</span>
+      </span>
+      <span class="meta-item">
+        <span class="meta-label">Run</span>
+        <span class="meta-value">{model.timestamp}</span>
+      </span>
+    </div>
+  </section>
+
+  <!-- Overall dimension scores -->
+  <section class="overview-section">
+    <h2 class="section-label">Aggregate scores</h2>
+    <div class="overview-bars">
+      {dimensions.map((d: string) => {
+        const val = model.overall_mean_severity?.[d];
+        return (
+          <div class="bar-row">
+            <div class="bar-label">
+              <span class="bar-dim">{d}</span>
+              <span class={`bar-val ${severityLabel(val)}`}>{val?.toFixed(1) ?? '—'}</span>
+            </div>
+            <div class="bar-track">
+              <div class={`bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
+            </div>
+            <div class="bar-desc">{dimDescriptions[d]}</div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Per-state breakdown -->
+  <section class="states-section">
+    <h2 class="section-label">Performance by vulnerability state</h2>
+    <p class="states-intro">
+      Click a state to see individual scenarios and transcripts.
+    </p>
+
+    <div class="states-grid">
+      {states.map(([stateKey, stateData]: [string, any]) => (
+        <div class="state-card" id={stateKey}>
+          <div class="state-header">
+            <h3 class="state-name">{stateDisplayName(stateKey)}</h3>
+            <span class={`state-overall ${severityLabel(stateData.weighted_mean)}`}>
+              {stateData.weighted_mean?.toFixed(2)}
+            </span>
+          </div>
+          <div class="state-meta">{stateData.num_scenarios} scenarios</div>
+
+          <div class="state-scores">
+            {dimensions.map((d: string) => {
+              const val = stateData.mean_severity?.[d];
+              return (
+                <div class="state-score-row">
+                  <span class="state-dim">{d.slice(0, 5)}.</span>
+                  <div class="state-bar-track">
+                    <div class={`state-bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
+                  </div>
+                  <span class={`state-val ${severityLabel(val)}`}>{val?.toFixed(1)}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div class="state-scenarios-placeholder">
+            <p class="placeholder-text">Scenario transcripts coming soon</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  /* ===== Model Header ===== */
+  .model-header {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .back-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 1rem;
+    transition: color 0.15s;
+  }
+
+  .back-link:hover { color: var(--ink); }
+
+  .model-title {
+    font-family: var(--font-mono);
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .model-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+  }
+
+  .meta-value {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  .overall-val {
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  /* ===== Overview Bars ===== */
+  .overview-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--parchment);
+  }
+
+  .overview-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 700px;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.2rem 1rem;
+    align-items: center;
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .bar-dim {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: var(--ink);
+  }
+
+  .bar-val {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bar-track {
+    height: 8px;
+    background: var(--parchment);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .bar-fill.sev-1, .bar-fill.sev-2 { background: var(--sage-light); }
+  .bar-fill.sev-3 { background: var(--amber); }
+  .bar-fill.sev-4 { background: var(--orange-warn); }
+  .bar-fill.sev-5 { background: var(--red-bad); }
+
+  .bar-desc {
+    grid-column: 1 / -1;
+    font-family: var(--font-serif);
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  /* ===== States ===== */
+  .states-section {
+    margin-bottom: 3rem;
+  }
+
+  .states-intro {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .states-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .state-card {
+    background: white;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .state-card:hover {
+    border-color: var(--ink-faint);
+    box-shadow: 0 2px 8px rgba(44, 36, 24, 0.05);
+  }
+
+  .state-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.3rem;
+  }
+
+  .state-name {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .state-overall {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .state-meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .state-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .state-score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .state-dim {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    width: 3.5rem;
+    text-transform: capitalize;
+  }
+
+  .state-bar-track {
+    flex: 1;
+    height: 5px;
+    background: var(--parchment);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .state-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+
+  .state-bar-fill.sev-1, .state-bar-fill.sev-2 { background: var(--sage-light); }
+  .state-bar-fill.sev-3 { background: var(--amber); }
+  .state-bar-fill.sev-4 { background: var(--orange-warn); }
+  .state-bar-fill.sev-5 { background: var(--red-bad); }
+
+  .state-val {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    width: 2rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .state-scenarios-placeholder {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--parchment);
+  }
+
+  .placeholder-text {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* Severity colors */
+  .sev-1 { color: var(--green-good); }
+  .sev-2 { color: var(--sage); }
+  .sev-3 { color: var(--yellow-mid); }
+  .sev-4 { color: var(--orange-warn); }
+  .sev-5 { color: var(--red-bad); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .bar-row {
+      grid-template-columns: 120px 1fr;
+    }
+
+    .states-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .model-meta-row {
+      gap: 1rem;
+    }
+  }
+</style>
