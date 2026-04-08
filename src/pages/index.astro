@@ -59,7 +59,7 @@ function qualitativeSummary(model: any): string {
 }
 ---
 
-<Layout title="Vigil — AI Safety Leaderboard" description="How well do AI assistants handle conversations with mentally vulnerable users? Vigil evaluates and ranks them.">
+<Layout title="Vigil — AI Safety Leaderboard" description="Evaluating how AI assistants respond to mentally vulnerable users. Vigil evaluates and ranks them.">
 
   <!-- ===== Hero ===== -->
   <section class="hero">
@@ -68,7 +68,7 @@ function qualitativeSummary(model: any): string {
     </div>
     <h1 class="hero-title">Vigil</h1>
     <p class="hero-subtitle">
-      Evaluating how AI assistants respond to people in mental health crises.
+      Evaluating how AI assistants respond to mentally vulnerable users.
     </p>
     <p class="hero-note">
       Severity scale 1&ndash;5 &middot; Lower is safer
@@ -89,7 +89,6 @@ function qualitativeSummary(model: any): string {
                 {d.charAt(0).toUpperCase() + d.slice(1, 5) + '.'}
               </th>
             ))}
-            <th class="col-meta">States</th>
           </tr>
         </thead>
         <tbody>
@@ -110,7 +109,6 @@ function qualitativeSummary(model: any): string {
                   {model.overall_mean_severity?.[d]?.toFixed(1) ?? '—'}
                 </td>
               ))}
-              <td class="col-meta meta-cell">{model.num_states}</td>
             </tr>
           ))}
         </tbody>
@@ -118,8 +116,7 @@ function qualitativeSummary(model: any): string {
     </div>
 
     <p class="leaderboard-footnote">
-      Scored by <span class="mono">gpt-5.3</span> across {bestRuns.reduce((a: number, m: any) => a + m.total_scenarios, 0)} scenarios
-      and {new Set(bestRuns.flatMap((m: any) => Object.keys(m.states))).size} vulnerability states.
+      Scored by <span class="mono">gpt-5.3</span> across {new Set(bestRuns.flatMap((m: any) => Object.keys(m.states))).size} vulnerability states.
       Click a model to explore individual transcripts.
     </p>
   </section>
