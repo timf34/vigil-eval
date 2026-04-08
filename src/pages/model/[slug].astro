@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import leaderboardData from '../../../public/leaderboard-data.json';
+import modelCardsData from '../../../public/model-cards.json';
 
 export function getStaticPaths() {
   const paths: any[] = [];
@@ -18,6 +19,7 @@ export function getStaticPaths() {
 }
 
 const { model } = Astro.props;
+const modelCard = (modelCardsData as any)[model.target_model] ?? null;
 const dimensions = leaderboardData.dimensions;
 const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
 
@@ -80,6 +82,66 @@ const states = Object.entries(model.states).sort(
     </div>
   </section>
 
+  <!-- ===== Model Card ===== -->
+  {modelCard && (
+    <section class="model-card-section">
+
+      <div class="archetype-row">
+        <span class="archetype-label">Archetype</span>
+        <span class="archetype-value">{modelCard.archetype}</span>
+      </div>
+
+      <p class="model-blurb">{modelCard.summary_blurb}</p>
+
+      {modelCard.warning_labels?.length > 0 && (
+        <div class="warning-labels">
+          {modelCard.warning_labels.map((w: string) => (
+            <div class="warning-label">
+              <span class="warning-icon">&#9651;</span>
+              {w}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div class="card-columns">
+        <div class="pattern-col">
+          <h3 class="pattern-heading protective">Protective patterns</h3>
+          <ul class="pattern-list">
+            {modelCard.recurring_protective_patterns?.map((p: string) => (
+              <li class="pattern-item protective">{p}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="pattern-col">
+          <h3 class="pattern-heading risky">Risky patterns</h3>
+          <ul class="pattern-list">
+            {modelCard.recurring_risky_patterns?.map((p: string) => (
+              <li class="pattern-item risky">{p}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="rates-col">
+          <h3 class="pattern-heading">Behavioral rates</h3>
+          <dl class="rates-list">
+            {Object.entries(modelCard.behavior_rates ?? {}).map(([key, val]: [string, any]) => (
+              <div class="rate-row">
+                <dt class="rate-key">{key.replace(/_/g, ' ')}</dt>
+                <dd class="rate-val">
+                  <div class="rate-bar-track">
+                    <div class="rate-bar-fill" style={`width: ${Math.round((val as number) * 100)}%`} />
+                  </div>
+                  <span class="rate-pct">{Math.round((val as number) * 100)}%</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+    </section>
+  )}
+
   <!-- Overall dimension scores -->
   <section class="overview-section">
     <h2 class="section-label">Aggregate scores</h2>
@@ -105,10 +167,6 @@ const states = Object.entries(model.states).sort(
   <!-- Per-state breakdown -->
   <section class="states-section">
     <h2 class="section-label">Performance by vulnerability state</h2>
-    <p class="states-intro">
-      Click a state to see individual scenarios and transcripts.
-    </p>
-
     <div class="states-grid">
       {states.map(([stateKey, stateData]: [string, any]) => (
         <div class="state-card" id={stateKey}>
@@ -135,9 +193,18 @@ const states = Object.entries(model.states).sort(
             })}
           </div>
 
-          <div class="state-scenarios-placeholder">
-            <p class="placeholder-text">Scenario transcripts coming soon</p>
-          </div>
+          {(() => {
+            const dossier = modelCard?.state_dossiers?.[stateKey];
+            return dossier?.summary ? (
+              <div class="state-dossier">
+                <p class="dossier-text">{dossier.summary}</p>
+              </div>
+            ) : (
+              <div class="state-scenarios-placeholder">
+                <p class="placeholder-text">Scenario transcripts coming soon</p>
+              </div>
+            );
+          })()}
         </div>
       ))}
     </div>
@@ -201,6 +268,184 @@ const states = Object.entries(model.states).sort(
   .overall-val {
     font-size: 1.3rem;
     font-weight: 600;
+  }
+
+  /* ===== Model Card ===== */
+  .model-card-section {
+    background: white;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .archetype-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .archetype-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+
+  .archetype-value {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .model-blurb {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 1.2rem;
+    max-width: 780px;
+  }
+
+  .warning-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .warning-label {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: var(--orange-warn);
+    line-height: 1.5;
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  .warning-icon {
+    font-size: 0.6rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .card-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--parchment);
+  }
+
+  .pattern-heading {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .pattern-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .pattern-item {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    padding-left: 0.9rem;
+    position: relative;
+  }
+
+  .pattern-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+  }
+
+  .pattern-item.protective { color: var(--sage); }
+  .pattern-item.protective::before { background: var(--sage); }
+  .pattern-item.risky { color: var(--orange-warn); }
+  .pattern-item.risky::before { background: var(--orange-warn); }
+
+  .rates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin: 0;
+  }
+
+  .rate-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .rate-key {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    text-transform: capitalize;
+  }
+
+  .rate-val {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    grid-column: 1 / -1;
+  }
+
+  .rate-bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--parchment);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .rate-bar-fill {
+    height: 100%;
+    background: var(--sage-light);
+    border-radius: 2px;
+  }
+
+  .rate-pct {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    width: 2.5rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== State Dossier ===== */
+  .state-dossier {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.6);
+  }
+
+  .dossier-text {
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    font-style: italic;
   }
 
   /* ===== Overview Bars ===== */
@@ -410,7 +655,19 @@ const states = Object.entries(model.states).sort(
   .sev-5 { color: var(--red-bad); }
 
   /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .card-columns {
+      grid-template-columns: 1fr 1fr;
+    }
+    .rates-col {
+      grid-column: 1 / -1;
+    }
+  }
+
   @media (max-width: 768px) {
+    .card-columns {
+      grid-template-columns: 1fr;
+    }
     .bar-row {
       grid-template-columns: 120px 1fr;
     }
