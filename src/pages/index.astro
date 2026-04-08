@@ -63,9 +63,6 @@ function qualitativeSummary(model: any): string {
 
   <!-- ===== Hero ===== -->
   <section class="hero">
-    <div class="hero-flower" aria-hidden="true">
-      <img src="/flower.svg" alt="" class="hero-flower-img" />
-    </div>
     <h1 class="hero-title">Vigil</h1>
     <p class="hero-subtitle">
       Evaluating how AI assistants respond to mentally vulnerable users.
@@ -98,7 +95,6 @@ function qualitativeSummary(model: any): string {
               <td class="col-model">
                 <a href={`/model/${modelSlug(model)}`} class="model-link">
                   <span class="model-name">{displayName(model.target_model)}</span>
-                  <span class="model-qual">{qualitativeSummary(model)}</span>
                 </a>
               </td>
               <td class={`col-overall score-cell overall-score ${severityLabel(model.overall_weighted_mean)}`}>
@@ -190,17 +186,6 @@ function qualitativeSummary(model: any): string {
   .hero {
     text-align: center;
     padding: 3rem 0 2.5rem;
-  }
-
-  .hero-flower {
-    display: flex;
-    justify-content: center;
-  }
-
-  .hero-flower-img {
-    height: 80px;
-    width: auto;
-    opacity: 0.75;
   }
 
   .hero-title {
@@ -322,17 +307,6 @@ function qualitativeSummary(model: any): string {
     font-weight: 500;
     display: block;
     transition: color 0.15s;
-  }
-
-  .model-qual {
-    font-family: var(--font-serif);
-    font-size: 0.78rem;
-    font-style: italic;
-    color: var(--ink-muted);
-    display: block;
-    margin-top: 0.2rem;
-    line-height: 1.4;
-    max-width: 320px;
   }
 
   /* Score severity colors */
