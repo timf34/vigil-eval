@@ -3,12 +3,23 @@ import Layout from '../../layouts/Layout.astro';
 import leaderboardData from '../../../public/leaderboard-data.json';
 import modelCardsData from '../../../public/model-cards.json';
 
+function shortModelName(model: string) {
+  return model.replace(/^openrouter\//, '').split('/').pop() ?? model;
+}
+
+function displayName(m: string) {
+  return shortModelName(m);
+}
+
+function modelSlug(model: any): string {
+  return model.slug ?? `${encodeURIComponent(displayName(model.target_model))}--${model.timestamp}`;
+}
+
 export function getStaticPaths() {
   const paths: any[] = [];
 
   for (const model of leaderboardData.models) {
-    const name = model.target_model.replace(/^openrouter\//, '').replace(/^openai\//, '');
-    const slug = encodeURIComponent(name) + '--' + model.timestamp;
+    const slug = model.slug ?? `${encodeURIComponent(shortModelName(model.target_model))}--${model.timestamp}`;
     paths.push({
       params: { slug },
       props: { model },
@@ -19,13 +30,10 @@ export function getStaticPaths() {
 }
 
 const { model } = Astro.props;
-const modelCard = (modelCardsData as any)[model.target_model] ?? null;
+const modelCard = (modelCardsData as any)[modelSlug(model)] ?? null;
+const runCard = (leaderboardData.runs as any[]).find((run: any) => run.timestamp === model.timestamp) ?? null;
 const dimensions = leaderboardData.dimensions;
 const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
-
-function displayName(m: string) {
-  return m.replace(/^openrouter\//, '').replace(/^openai\//, '');
-}
 
 function severityLabel(val: number | null): string {
   if (val == null) return '';
@@ -34,6 +42,14 @@ function severityLabel(val: number | null): string {
   if (val <= 3.5) return 'sev-3';
   if (val <= 4.5) return 'sev-4';
   return 'sev-5';
+}
+
+function statusClass(status: string): string {
+  return `status-${status}`;
+}
+
+function stageClass(status: string): string {
+  return `stage-${status}`;
 }
 
 function stateDisplayName(key: string): string {
@@ -65,7 +81,7 @@ const states = Object.entries(model.states).sort(
       </span>
       <span class="meta-item">
         <span class="meta-label">Judge</span>
-        <span class="meta-value">{displayName(model.judge_model)}</span>
+        <span class="meta-value">{model.judge_label}</span>
       </span>
       <span class="meta-item">
         <span class="meta-label">Scenarios</span>
@@ -79,6 +95,45 @@ const states = Object.entries(model.states).sort(
         <span class="meta-label">Run</span>
         <span class="meta-value">{model.timestamp}</span>
       </span>
+    </div>
+  </section>
+
+  <section class="run-provenance-section">
+    <div class="run-provenance-card">
+      <div class="run-provenance-head">
+        <div>
+          <h2 class="section-label run-section-label">Run Provenance</h2>
+          <p class="run-name">{model.run_label}</p>
+        </div>
+        <span class={`status-pill ${statusClass(model.status)}`}>{model.status_label}</span>
+      </div>
+
+      <p class="run-use">{model.recommended_use}</p>
+
+      <div class="run-freshness">
+        <span class={`freshness-pill ${stageClass(model.transcripts_status)}`}>Transcripts: {model.transcripts_status}</span>
+        <span class={`freshness-pill ${stageClass(model.stage4_status)}`}>Stage 4: {model.stage4_status}</span>
+        <span class={`freshness-pill ${stageClass(model.stage5_status)}`}>Stage 5: {model.stage5_status}</span>
+      </div>
+
+      <p class="run-note">{model.notes}</p>
+
+      {runCard && (
+        <div class="run-meta-grid">
+          <div class="run-meta-item">
+            <span class="run-meta-label">Batch</span>
+            <span class="run-meta-value">{runCard.model_count} models / {runCard.state_count} states</span>
+          </div>
+          <div class="run-meta-item">
+            <span class="run-meta-label">Evaluator</span>
+            <span class="run-meta-value">{displayName(runCard.evaluator_model)}</span>
+          </div>
+          <div class="run-meta-item">
+            <span class="run-meta-label">Profile model</span>
+            <span class="run-meta-value">{displayName(runCard.characterization_model)}</span>
+          </div>
+        </div>
+      )}
     </div>
   </section>
 
@@ -268,6 +323,111 @@ const states = Object.entries(model.states).sort(
   .overall-val {
     font-size: 1.3rem;
     font-weight: 600;
+  }
+
+  .status-pill,
+  .freshness-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.22rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .status-current,
+  .stage-current,
+  .stage-valid {
+    background: rgba(107, 124, 94, 0.12);
+    color: var(--sage);
+    border-color: rgba(107, 124, 94, 0.18);
+  }
+
+  .status-rejudge_needed,
+  .stage-stale {
+    background: rgba(181, 111, 71, 0.12);
+    color: var(--orange-warn);
+    border-color: rgba(181, 111, 71, 0.18);
+  }
+
+  /* ===== Run Provenance ===== */
+  .run-provenance-section {
+    margin-bottom: 2rem;
+  }
+
+  .run-provenance-card {
+    background: white;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    padding: 1.3rem 1.5rem;
+  }
+
+  .run-provenance-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .run-section-label {
+    margin-bottom: 0.4rem;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .run-name {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .run-use,
+  .run-note {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 0.8rem;
+  }
+
+  .run-freshness {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .run-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.8rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--parchment);
+  }
+
+  .run-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .run-meta-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  .run-meta-value {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink);
   }
 
   /* ===== Model Card ===== */

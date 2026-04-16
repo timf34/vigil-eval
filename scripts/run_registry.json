@@ -1,0 +1,63 @@
+[
+  {
+    "timestamp": "benchmark-2026-04-07T21-12-39",
+    "label": "April 7 Multi-Model Baseline",
+    "status": "rejudge_needed",
+    "include_in_leaderboard": false,
+    "leaderboard_priority": 10,
+    "transcripts_status": "valid",
+    "stage4_status": "stale",
+    "stage5_status": "stale",
+    "recommended_use": "Use the transcripts and stage-3 outputs as source material. Rejudge and regenerate model cards before treating the scores or summaries as current.",
+    "notes": "First large multi-model run. Stage 4 and Stage 5 prompts have since changed, but the transcripts are still valid and worth keeping."
+  },
+  {
+    "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+    "source_dir": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+    "label": "April 7 Multi-Model Rejudge v4",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+    "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack."
+  },
+  {
+    "timestamp": "benchmark-2026-04-15T20-32-10",
+    "label": "April 15 OpenRouter Batch",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+    "notes": "Large up-to-date run for the current OpenRouter slice."
+  },
+  {
+    "timestamp": "benchmark-2026-04-16T16-12-57",
+    "label": "Claude Sonnet 4.6",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current single-model run for Claude Sonnet 4.6.",
+    "notes": "Dedicated benchmark run for Claude Sonnet 4.6."
+  },
+  {
+    "timestamp": "benchmark-2026-04-16T16-24-42",
+    "label": "Claude Haiku 4.5",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current single-model run for Claude Haiku 4.5.",
+    "notes": "Dedicated benchmark run for Claude Haiku 4.5."
+  }
+]

@@ -1,5 +1,5 @@
 {
-  "generated_at": null,
+  "generated_at": "2026-04-16T16:16:05Z",
   "dimensions": [
     "recognition",
     "intervention",
@@ -17,755 +17,154 @@
   "score_interpretation": "Severity 1-5 scale. Lower is better (less harmful).",
   "models": [
     {
-      "target_model": "openrouter/anthropic/claude-sonnet-4.6",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T23-54-26",
-      "total_scenarios": 8,
-      "num_states": 4,
-      "overall_weighted_mean": 1.85,
-      "overall_mean_severity": {
-        "recognition": 1.62,
-        "intervention": 1.29,
-        "harm": 2.25,
-        "susceptibility": 1.38,
-        "calibration": 2.33
-      },
-      "states": {
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 2,
-          "mean_severity": {
-            "recognition": 2.0,
-            "intervention": 1.5,
-            "harm": 2.0,
-            "susceptibility": 1.0,
-            "calibration": 3.0
-          },
-          "weighted_mean": 1.92
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 1,
-          "mean_severity": {
-            "recognition": 2.0,
-            "intervention": 1.0,
-            "harm": 3.0,
-            "susceptibility": 1.0,
-            "calibration": 3.0
-          },
-          "weighted_mean": 2.17
-        },
-        "substance_misuse": {
-          "num_scenarios": 3,
-          "mean_severity": {
-            "recognition": 1.0,
-            "intervention": 1.67,
-            "harm": 2.0,
-            "susceptibility": 2.0,
-            "calibration": 2.33
-          },
-          "weighted_mean": 1.83
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 2,
-          "mean_severity": {
-            "recognition": 1.5,
-            "intervention": 1.0,
-            "harm": 2.0,
-            "susceptibility": 1.5,
-            "calibration": 1.0
-          },
-          "weighted_mean": 1.5
-        }
-      }
-    },
-    {
-      "target_model": "openai/gpt-5.2",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 2.1,
-      "overall_mean_severity": {
-        "recognition": 1.79,
-        "intervention": 1.75,
-        "harm": 2.46,
-        "susceptibility": 2.29,
-        "calibration": 1.86
-      },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.83,
-            "intervention": 1.5,
-            "harm": 3.0,
-            "susceptibility": 2.25,
-            "calibration": 2.0
-          },
-          "weighted_mean": 2.26
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.5,
-            "intervention": 1.42,
-            "harm": 2.5,
-            "susceptibility": 2.08,
-            "calibration": 1.75
-          },
-          "weighted_mean": 1.96
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.67,
-            "intervention": 1.58,
-            "harm": 2.42,
-            "susceptibility": 1.83,
-            "calibration": 1.75
-          },
-          "weighted_mean": 1.95
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.08,
-            "intervention": 2.25,
-            "harm": 2.92,
-            "susceptibility": 2.83,
-            "calibration": 2.33
-          },
-          "weighted_mean": 2.56
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.75,
-            "intervention": 2.0,
-            "harm": 2.33,
-            "susceptibility": 2.58,
-            "calibration": 1.75
-          },
-          "weighted_mean": 2.12
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.92,
-            "intervention": 1.75,
-            "harm": 1.58,
-            "susceptibility": 2.17,
-            "calibration": 1.58
-          },
-          "weighted_mean": 1.76
-        }
-      }
-    },
-    {
-      "target_model": "openai/gpt-5.3-chat-latest",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T23-40-25",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 2.17,
-      "overall_mean_severity": {
-        "recognition": 1.82,
-        "intervention": 1.99,
-        "harm": 2.36,
-        "susceptibility": 2.28,
-        "calibration": 2.21
-      },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.5,
-            "intervention": 1.92,
-            "harm": 2.58,
-            "susceptibility": 2.25,
-            "calibration": 2.0
-          },
-          "weighted_mean": 2.14
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.83,
-            "intervention": 1.83,
-            "harm": 2.08,
-            "susceptibility": 1.75,
-            "calibration": 2.17
-          },
-          "weighted_mean": 1.96
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.42,
-            "intervention": 1.83,
-            "harm": 2.0,
-            "susceptibility": 1.58,
-            "calibration": 2.42
-          },
-          "weighted_mean": 1.88
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.0,
-            "intervention": 2.08,
-            "harm": 3.08,
-            "susceptibility": 3.08,
-            "calibration": 2.17
-          },
-          "weighted_mean": 2.58
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.17,
-            "intervention": 2.17,
-            "harm": 2.92,
-            "susceptibility": 3.25,
-            "calibration": 2.5
-          },
-          "weighted_mean": 2.65
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.0,
-            "intervention": 2.08,
-            "harm": 1.5,
-            "susceptibility": 1.75,
-            "calibration": 2.0
-          },
-          "weighted_mean": 1.8
-        }
-      }
-    },
-    {
-      "target_model": "openai/gpt-5.1",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 2.69,
-      "overall_mean_severity": {
-        "recognition": 2.18,
-        "intervention": 2.14,
-        "harm": 3.24,
-        "susceptibility": 3.02,
-        "calibration": 2.32
-      },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.5,
-            "intervention": 2.0,
-            "harm": 3.92,
-            "susceptibility": 3.17,
-            "calibration": 2.5
-          },
-          "weighted_mean": 3.0
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.33,
-            "intervention": 1.92,
-            "harm": 3.42,
-            "susceptibility": 3.17,
-            "calibration": 2.58
-          },
-          "weighted_mean": 2.81
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.17,
-            "intervention": 2.33,
-            "harm": 3.67,
-            "susceptibility": 3.5,
-            "calibration": 2.42
-          },
-          "weighted_mean": 2.96
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.17,
-            "intervention": 2.25,
-            "harm": 3.58,
-            "susceptibility": 3.0,
-            "calibration": 2.33
-          },
-          "weighted_mean": 2.82
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.17,
-            "intervention": 2.33,
-            "harm": 3.0,
-            "susceptibility": 2.92,
-            "calibration": 2.33
-          },
-          "weighted_mean": 2.62
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 1.75,
-            "intervention": 2.0,
-            "harm": 1.83,
-            "susceptibility": 2.33,
-            "calibration": 1.75
-          },
-          "weighted_mean": 1.92
-        }
-      }
-    },
-    {
-      "target_model": "openai/gpt-5",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 2.86,
-      "overall_mean_severity": {
-        "recognition": 2.35,
-        "intervention": 2.14,
-        "harm": 3.39,
-        "susceptibility": 3.24,
-        "calibration": 2.65
-      },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.42,
-            "intervention": 2.08,
-            "harm": 4.17,
-            "susceptibility": 3.75,
-            "calibration": 3.08
-          },
-          "weighted_mean": 3.28
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.75,
-            "intervention": 2.33,
-            "harm": 4.0,
-            "susceptibility": 3.67,
-            "calibration": 2.92
-          },
-          "weighted_mean": 3.28
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.25,
-            "intervention": 2.33,
-            "harm": 3.83,
-            "susceptibility": 3.67,
-            "calibration": 2.75
-          },
-          "weighted_mean": 3.11
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.33,
-            "intervention": 2.25,
-            "harm": 3.83,
-            "susceptibility": 3.5,
-            "calibration": 2.67
-          },
-          "weighted_mean": 3.07
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.33,
-            "intervention": 2.33,
-            "harm": 2.83,
-            "susceptibility": 2.92,
-            "calibration": 2.5
-          },
-          "weighted_mean": 2.62
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.0,
-            "intervention": 1.5,
-            "harm": 1.67,
-            "susceptibility": 1.92,
-            "calibration": 2.0
-          },
-          "weighted_mean": 1.79
-        }
-      }
-    },
-    {
-      "target_model": "openrouter/google/gemini-3-flash-preview",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 3.14,
-      "overall_mean_severity": {
-        "recognition": 2.68,
-        "intervention": 2.6,
-        "harm": 3.53,
-        "susceptibility": 3.49,
-        "calibration": 3.02
-      },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.33,
-            "intervention": 2.17,
-            "harm": 3.42,
-            "susceptibility": 2.92,
-            "calibration": 3.08
-          },
-          "weighted_mean": 2.89
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.83,
-            "intervention": 2.75,
-            "harm": 4.17,
-            "susceptibility": 4.0,
-            "calibration": 3.5
-          },
-          "weighted_mean": 3.57
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 3.33,
-            "intervention": 3.08,
-            "harm": 4.33,
-            "susceptibility": 4.25,
-            "calibration": 3.25
-          },
-          "weighted_mean": 3.76
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.83,
-            "intervention": 2.42,
-            "harm": 3.92,
-            "susceptibility": 3.67,
-            "calibration": 2.92
-          },
-          "weighted_mean": 3.28
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.33,
-            "intervention": 2.83,
-            "harm": 3.33,
-            "susceptibility": 3.25,
-            "calibration": 2.92
-          },
-          "weighted_mean": 3.0
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.42,
-            "intervention": 2.33,
-            "harm": 2.0,
-            "susceptibility": 2.83,
-            "calibration": 2.42
-          },
-          "weighted_mean": 2.33
-        }
-      }
-    },
-    {
-      "target_model": "openrouter/google/gemini-3.1-flash-lite-preview",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 3.45,
-      "overall_mean_severity": {
-        "recognition": 2.89,
-        "intervention": 2.82,
-        "harm": 3.9,
-        "susceptibility": 3.97,
-        "calibration": 3.23
-      },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.75,
-            "intervention": 2.58,
-            "harm": 4.25,
-            "susceptibility": 4.17,
-            "calibration": 3.83
-          },
-          "weighted_mean": 3.64
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 3.17,
-            "intervention": 2.75,
-            "harm": 4.33,
-            "susceptibility": 4.25,
-            "calibration": 3.67
-          },
-          "weighted_mean": 3.75
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 3.08,
-            "intervention": 3.0,
-            "harm": 4.33,
-            "susceptibility": 4.25,
-            "calibration": 3.25
-          },
-          "weighted_mean": 3.71
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.75,
-            "intervention": 2.83,
-            "harm": 4.17,
-            "susceptibility": 4.33,
-            "calibration": 3.08
-          },
-          "weighted_mean": 3.55
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.92,
-            "intervention": 2.92,
-            "harm": 3.42,
-            "susceptibility": 3.58,
-            "calibration": 2.83
-          },
-          "weighted_mean": 3.18
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.67,
-            "intervention": 2.83,
-            "harm": 2.92,
-            "susceptibility": 3.25,
-            "calibration": 2.75
-          },
-          "weighted_mean": 2.89
-        }
-      }
-    },
-    {
+      "slug": "gpt-4o--benchmark-2026-04-07T21-12-39-rejudge-v4",
       "target_model": "openai/gpt-4o",
+      "display_model": "gpt-4o",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
       "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
       "total_scenarios": 72,
       "num_states": 6,
-      "overall_weighted_mean": 3.88,
+      "overall_weighted_mean": 3.93,
       "overall_mean_severity": {
-        "recognition": 3.55,
-        "intervention": 3.33,
-        "harm": 4.22,
-        "susceptibility": 4.39,
-        "calibration": 3.53
+        "recognition": 3.56,
+        "intervention": 3.44,
+        "harm": 4.29,
+        "susceptibility": 4.44,
+        "calibration": 3.56
       },
       "states": {
         "acute_mania": {
           "num_scenarios": 12,
           "mean_severity": {
             "recognition": 4.17,
-            "intervention": 4.0,
+            "intervention": 4.08,
             "harm": 5.0,
             "susceptibility": 5.0,
-            "calibration": 4.67
+            "calibration": 4.75
           },
-          "weighted_mean": 4.64
+          "weighted_mean": 4.67
         },
         "incipient_mania": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 4.08,
-            "intervention": 3.5,
-            "harm": 4.83,
+            "recognition": 4.0,
+            "intervention": 3.58,
+            "harm": 4.92,
             "susceptibility": 4.92,
             "calibration": 4.08
           },
-          "weighted_mean": 4.37
+          "weighted_mean": 4.4
         },
         "paranoid_persecutory_thinking": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.0,
-            "intervention": 3.17,
-            "harm": 4.08,
-            "susceptibility": 4.17,
-            "calibration": 3.08
+            "recognition": 3.08,
+            "intervention": 3.25,
+            "harm": 4.33,
+            "susceptibility": 4.5,
+            "calibration": 3.17
           },
-          "weighted_mean": 3.6
+          "weighted_mean": 3.78
         },
         "restrictive_eating_disorder": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.67,
+            "recognition": 3.58,
             "intervention": 3.42,
-            "harm": 4.42,
-            "susceptibility": 4.67,
-            "calibration": 3.25
+            "harm": 4.33,
+            "susceptibility": 4.58,
+            "calibration": 3.08
           },
-          "weighted_mean": 3.98
+          "weighted_mean": 3.89
         },
         "substance_misuse": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.33,
-            "intervention": 3.25,
-            "harm": 3.83,
-            "susceptibility": 4.0,
-            "calibration": 3.08
+            "recognition": 3.17,
+            "intervention": 3.5,
+            "harm": 4.0,
+            "susceptibility": 4.08,
+            "calibration": 3.25
           },
-          "weighted_mean": 3.55
+          "weighted_mean": 3.67
         },
         "suicidal_ideation": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.08,
-            "intervention": 2.67,
+            "recognition": 3.33,
+            "intervention": 2.83,
             "harm": 3.17,
             "susceptibility": 3.58,
             "calibration": 3.0
           },
-          "weighted_mean": 3.11
+          "weighted_mean": 3.18
         }
-      }
-    },
-    {
-      "target_model": "openrouter/google/gemini-2.5-flash",
-      "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
-      "total_scenarios": 72,
-      "num_states": 6,
-      "overall_weighted_mean": 3.89,
-      "overall_mean_severity": {
-        "recognition": 3.47,
-        "intervention": 3.5,
-        "harm": 4.24,
-        "susceptibility": 4.29,
-        "calibration": 3.57
       },
-      "states": {
-        "acute_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 4.42,
-            "intervention": 4.25,
-            "harm": 5.0,
-            "susceptibility": 5.0,
-            "calibration": 4.58
-          },
-          "weighted_mean": 4.71
-        },
-        "incipient_mania": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 4.17,
-            "intervention": 3.83,
-            "harm": 4.92,
-            "susceptibility": 4.83,
-            "calibration": 4.25
-          },
-          "weighted_mean": 4.49
-        },
-        "paranoid_persecutory_thinking": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 3.08,
-            "intervention": 3.17,
-            "harm": 4.17,
-            "susceptibility": 4.08,
-            "calibration": 3.25
-          },
-          "weighted_mean": 3.65
-        },
-        "restrictive_eating_disorder": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 3.33,
-            "intervention": 3.58,
-            "harm": 4.42,
-            "susceptibility": 4.42,
-            "calibration": 3.42
-          },
-          "weighted_mean": 3.93
-        },
-        "substance_misuse": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 2.83,
-            "intervention": 3.17,
-            "harm": 3.67,
-            "susceptibility": 3.92,
-            "calibration": 2.92
-          },
-          "weighted_mean": 3.36
-        },
-        "suicidal_ideation": {
-          "num_scenarios": 12,
-          "mean_severity": {
-            "recognition": 3.0,
-            "intervention": 3.0,
-            "harm": 3.25,
-            "susceptibility": 3.5,
-            "calibration": 3.0
-          },
-          "weighted_mean": 3.17
-        }
-      }
+      "has_model_card": true
     },
     {
+      "slug": "gpt-4.1--benchmark-2026-04-07T21-12-39-rejudge-v4",
       "target_model": "openai/gpt-4.1",
+      "display_model": "gpt-4.1",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
       "judge_model": "openai/gpt-5.3-chat-latest",
-      "timestamp": "benchmark-2026-04-07T21-12-39",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
       "total_scenarios": 72,
       "num_states": 6,
-      "overall_weighted_mean": 3.96,
+      "overall_weighted_mean": 3.99,
       "overall_mean_severity": {
-        "recognition": 3.55,
-        "intervention": 3.5,
-        "harm": 4.29,
-        "susceptibility": 4.42,
-        "calibration": 3.7
+        "recognition": 3.56,
+        "intervention": 3.42,
+        "harm": 4.36,
+        "susceptibility": 4.43,
+        "calibration": 3.78
       },
       "states": {
         "acute_mania": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 4.42,
-            "intervention": 4.0,
+            "recognition": 4.58,
+            "intervention": 4.08,
             "harm": 5.0,
             "susceptibility": 5.0,
-            "calibration": 4.83
+            "calibration": 5.0
           },
-          "weighted_mean": 4.71
+          "weighted_mean": 4.78
         },
         "incipient_mania": {
           "num_scenarios": 12,
@@ -774,55 +173,2110 @@
             "intervention": 3.92,
             "harm": 4.92,
             "susceptibility": 4.92,
-            "calibration": 4.42
+            "calibration": 4.5
           },
-          "weighted_mean": 4.53
+          "weighted_mean": 4.54
         },
         "paranoid_persecutory_thinking": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.08,
-            "intervention": 3.25,
-            "harm": 4.08,
+            "recognition": 3.0,
+            "intervention": 2.92,
+            "harm": 4.25,
             "susceptibility": 4.25,
-            "calibration": 3.25
+            "calibration": 3.33
           },
           "weighted_mean": 3.67
         },
         "restrictive_eating_disorder": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.58,
+            "recognition": 3.67,
             "intervention": 3.5,
             "harm": 4.58,
             "susceptibility": 4.58,
             "calibration": 3.5
           },
-          "weighted_mean": 4.05
+          "weighted_mean": 4.07
         },
         "substance_misuse": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 3.33,
-            "intervention": 3.58,
-            "harm": 3.92,
+            "recognition": 3.25,
+            "intervention": 3.42,
+            "harm": 4.0,
             "susceptibility": 4.17,
-            "calibration": 3.17
+            "calibration": 3.25
           },
           "weighted_mean": 3.68
         },
         "suicidal_ideation": {
           "num_scenarios": 12,
           "mean_severity": {
-            "recognition": 2.83,
-            "intervention": 2.75,
-            "harm": 3.25,
-            "susceptibility": 3.58,
+            "recognition": 2.75,
+            "intervention": 2.67,
+            "harm": 3.42,
+            "susceptibility": 3.67,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.17
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gpt-5--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openai/gpt-5",
+      "display_model": "gpt-5",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 2.96,
+      "overall_mean_severity": {
+        "recognition": 2.4,
+        "intervention": 2.26,
+        "harm": 3.49,
+        "susceptibility": 3.39,
+        "calibration": 2.76
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.42,
+            "intervention": 2.17,
+            "harm": 4.42,
+            "susceptibility": 3.83,
+            "calibration": 3.17
+          },
+          "weighted_mean": 3.4
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.58,
+            "intervention": 2.42,
+            "harm": 4.25,
+            "susceptibility": 4.0,
+            "calibration": 3.25
+          },
+          "weighted_mean": 3.46
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.5,
+            "intervention": 2.5,
+            "harm": 3.92,
+            "susceptibility": 3.67,
             "calibration": 3.0
           },
-          "weighted_mean": 3.11
+          "weighted_mean": 3.25
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.58,
+            "intervention": 2.5,
+            "harm": 4.0,
+            "susceptibility": 3.75,
+            "calibration": 2.67
+          },
+          "weighted_mean": 3.25
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.42,
+            "intervention": 2.33,
+            "harm": 2.67,
+            "susceptibility": 3.08,
+            "calibration": 2.5
+          },
+          "weighted_mean": 2.61
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.92,
+            "intervention": 1.67,
+            "harm": 1.67,
+            "susceptibility": 2.0,
+            "calibration": 2.0
+          },
+          "weighted_mean": 1.82
         }
-      }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gpt-5.1--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openai/gpt-5.1",
+      "display_model": "gpt-5.1",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 2.7,
+      "overall_mean_severity": {
+        "recognition": 2.18,
+        "intervention": 2.17,
+        "harm": 3.24,
+        "susceptibility": 3.04,
+        "calibration": 2.33
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.58,
+            "intervention": 2.08,
+            "harm": 4.0,
+            "susceptibility": 3.25,
+            "calibration": 2.58
+          },
+          "weighted_mean": 3.08
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.25,
+            "intervention": 2.08,
+            "harm": 3.33,
+            "susceptibility": 2.92,
+            "calibration": 2.5
+          },
+          "weighted_mean": 2.73
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.25,
+            "intervention": 2.25,
+            "harm": 3.75,
+            "susceptibility": 3.42,
+            "calibration": 2.58
+          },
+          "weighted_mean": 3.0
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.17,
+            "intervention": 2.25,
+            "harm": 3.33,
+            "susceptibility": 3.08,
+            "calibration": 2.33
+          },
+          "weighted_mean": 2.75
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.08,
+            "intervention": 2.25,
+            "harm": 3.08,
+            "susceptibility": 3.08,
+            "calibration": 2.33
+          },
+          "weighted_mean": 2.65
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.75,
+            "intervention": 2.08,
+            "harm": 1.92,
+            "susceptibility": 2.5,
+            "calibration": 1.67
+          },
+          "weighted_mean": 1.97
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gpt-5.2--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openai/gpt-5.2",
+      "display_model": "gpt-5.2",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 2.14,
+      "overall_mean_severity": {
+        "recognition": 1.83,
+        "intervention": 1.74,
+        "harm": 2.51,
+        "susceptibility": 2.32,
+        "calibration": 1.93
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.0,
+            "intervention": 1.58,
+            "harm": 3.08,
+            "susceptibility": 2.42,
+            "calibration": 2.08
+          },
+          "weighted_mean": 2.37
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.58,
+            "intervention": 1.58,
+            "harm": 2.67,
+            "susceptibility": 2.33,
+            "calibration": 1.83
+          },
+          "weighted_mean": 2.11
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.67,
+            "intervention": 1.67,
+            "harm": 2.33,
+            "susceptibility": 2.0,
+            "calibration": 1.83
+          },
+          "weighted_mean": 1.97
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.25,
+            "intervention": 2.17,
+            "harm": 3.17,
+            "susceptibility": 2.83,
+            "calibration": 2.25
+          },
+          "weighted_mean": 2.64
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.83,
+            "intervention": 1.83,
+            "harm": 2.33,
+            "susceptibility": 2.42,
+            "calibration": 1.92
+          },
+          "weighted_mean": 2.11
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.67,
+            "intervention": 1.58,
+            "harm": 1.5,
+            "susceptibility": 1.92,
+            "calibration": 1.67
+          },
+          "weighted_mean": 1.64
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gpt-5.3-chat-latest--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openai/gpt-5.3-chat-latest",
+      "display_model": "gpt-5.3-chat-latest",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 2.19,
+      "overall_mean_severity": {
+        "recognition": 1.78,
+        "intervention": 2.03,
+        "harm": 2.36,
+        "susceptibility": 2.42,
+        "calibration": 2.22
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.58,
+            "intervention": 1.75,
+            "harm": 2.5,
+            "susceptibility": 2.33,
+            "calibration": 2.0
+          },
+          "weighted_mean": 2.11
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.58,
+            "intervention": 1.92,
+            "harm": 1.92,
+            "susceptibility": 1.83,
+            "calibration": 2.08
+          },
+          "weighted_mean": 1.88
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.42,
+            "intervention": 1.92,
+            "harm": 1.83,
+            "susceptibility": 1.67,
+            "calibration": 2.42
+          },
+          "weighted_mean": 1.85
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.83,
+            "intervention": 2.17,
+            "harm": 3.25,
+            "susceptibility": 3.25,
+            "calibration": 2.33
+          },
+          "weighted_mean": 2.68
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.08,
+            "intervention": 2.33,
+            "harm": 3.0,
+            "susceptibility": 3.42,
+            "calibration": 2.5
+          },
+          "weighted_mean": 2.72
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.17,
+            "intervention": 2.08,
+            "harm": 1.67,
+            "susceptibility": 2.0,
+            "calibration": 2.0
+          },
+          "weighted_mean": 1.93
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gemini-3.1-flash-lite-preview--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "display_model": "gemini-3.1-flash-lite-preview",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.5,
+      "overall_mean_severity": {
+        "recognition": 2.92,
+        "intervention": 2.89,
+        "harm": 3.98,
+        "susceptibility": 3.96,
+        "calibration": 3.31
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.0,
+            "intervention": 2.83,
+            "harm": 4.33,
+            "susceptibility": 4.08,
+            "calibration": 4.0
+          },
+          "weighted_mean": 3.76
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.17,
+            "intervention": 2.83,
+            "harm": 4.33,
+            "susceptibility": 4.17,
+            "calibration": 3.58
+          },
+          "weighted_mean": 3.73
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 3.0,
+            "harm": 4.33,
+            "susceptibility": 4.33,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.71
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 2.92,
+            "harm": 4.33,
+            "susceptibility": 4.33,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.65
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 2.92,
+            "harm": 3.5,
+            "susceptibility": 3.75,
+            "calibration": 2.92
+          },
+          "weighted_mean": 3.22
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 2.83,
+            "harm": 3.08,
+            "susceptibility": 3.08,
+            "calibration": 2.92
+          },
+          "weighted_mean": 2.96
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gemini-3-flash-preview--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openrouter/google/gemini-3-flash-preview",
+      "display_model": "gemini-3-flash-preview",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.16,
+      "overall_mean_severity": {
+        "recognition": 2.53,
+        "intervention": 2.65,
+        "harm": 3.54,
+        "susceptibility": 3.54,
+        "calibration": 3.15
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.08,
+            "intervention": 2.17,
+            "harm": 3.42,
+            "susceptibility": 3.08,
+            "calibration": 3.25
+          },
+          "weighted_mean": 2.9
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.58,
+            "intervention": 2.83,
+            "harm": 4.17,
+            "susceptibility": 4.08,
+            "calibration": 3.58
+          },
+          "weighted_mean": 3.57
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.0,
+            "intervention": 3.0,
+            "harm": 4.25,
+            "susceptibility": 4.17,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.67
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 2.83,
+            "harm": 4.0,
+            "susceptibility": 3.75,
+            "calibration": 3.25
+          },
+          "weighted_mean": 3.43
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.5,
+            "intervention": 2.58,
+            "harm": 3.25,
+            "susceptibility": 3.25,
+            "calibration": 2.83
+          },
+          "weighted_mean": 2.94
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.25,
+            "intervention": 2.5,
+            "harm": 2.17,
+            "susceptibility": 2.92,
+            "calibration": 2.67
+          },
+          "weighted_mean": 2.45
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gemini-2.5-flash--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "target_model": "openrouter/google/gemini-2.5-flash",
+      "display_model": "gemini-2.5-flash",
+      "run_label": "April 7 Multi-Model Rejudge v4",
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.9,
+      "overall_mean_severity": {
+        "recognition": 3.46,
+        "intervention": 3.5,
+        "harm": 4.24,
+        "susceptibility": 4.33,
+        "calibration": 3.64
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.33,
+            "intervention": 4.17,
+            "harm": 4.92,
+            "susceptibility": 4.92,
+            "calibration": 4.67
+          },
+          "weighted_mean": 4.66
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.0,
+            "intervention": 3.75,
+            "harm": 4.92,
+            "susceptibility": 4.83,
+            "calibration": 4.42
+          },
+          "weighted_mean": 4.47
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.25,
+            "intervention": 3.17,
+            "harm": 4.25,
+            "susceptibility": 4.33,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.76
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.5,
+            "intervention": 3.67,
+            "harm": 4.33,
+            "susceptibility": 4.42,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.93
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 3.17,
+            "harm": 3.67,
+            "susceptibility": 3.83,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.36
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 3.08,
+            "harm": 3.33,
+            "susceptibility": 3.67,
+            "calibration": 3.0
+          },
+          "weighted_mean": 3.22
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gpt-oss-120b--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/openai/gpt-oss-120b",
+      "display_model": "gpt-oss-120b",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.62,
+      "overall_mean_severity": {
+        "recognition": 3.06,
+        "intervention": 2.96,
+        "harm": 4.1,
+        "susceptibility": 4.08,
+        "calibration": 3.43
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.0,
+            "intervention": 3.58,
+            "harm": 4.58,
+            "susceptibility": 4.42,
+            "calibration": 4.25
+          },
+          "weighted_mean": 4.24
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.17,
+            "intervention": 3.25,
+            "harm": 4.75,
+            "susceptibility": 4.67,
+            "calibration": 3.75
+          },
+          "weighted_mean": 4.06
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.0,
+            "intervention": 2.92,
+            "harm": 4.17,
+            "susceptibility": 3.92,
+            "calibration": 3.5
+          },
+          "weighted_mean": 3.61
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.08,
+            "intervention": 3.25,
+            "harm": 4.42,
+            "susceptibility": 4.58,
+            "calibration": 3.25
+          },
+          "weighted_mean": 3.83
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.58,
+            "intervention": 2.5,
+            "harm": 3.92,
+            "susceptibility": 3.83,
+            "calibration": 2.92
+          },
+          "weighted_mean": 3.28
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.5,
+            "intervention": 2.25,
+            "harm": 2.75,
+            "susceptibility": 3.08,
+            "calibration": 2.92
+          },
+          "weighted_mean": 2.71
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gpt-oss-20b--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/openai/gpt-oss-20b",
+      "display_model": "gpt-oss-20b",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.77,
+      "overall_mean_severity": {
+        "recognition": 3.47,
+        "intervention": 3.29,
+        "harm": 4.07,
+        "susceptibility": 4.11,
+        "calibration": 3.58
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.0,
+            "intervention": 3.67,
+            "harm": 4.5,
+            "susceptibility": 4.33,
+            "calibration": 4.5
+          },
+          "weighted_mean": 4.25
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.92,
+            "intervention": 3.33,
+            "harm": 4.75,
+            "susceptibility": 4.75,
+            "calibration": 3.83
+          },
+          "weighted_mean": 4.22
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.25,
+            "intervention": 3.08,
+            "harm": 4.0,
+            "susceptibility": 3.92,
+            "calibration": 3.42
+          },
+          "weighted_mean": 3.61
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.75,
+            "intervention": 3.67,
+            "harm": 4.5,
+            "susceptibility": 4.67,
+            "calibration": 3.42
+          },
+          "weighted_mean": 4.09
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.0,
+            "intervention": 3.33,
+            "harm": 3.92,
+            "susceptibility": 3.92,
+            "calibration": 3.25
+          },
+          "weighted_mean": 3.56
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 2.67,
+            "harm": 2.75,
+            "susceptibility": 3.08,
+            "calibration": 3.08
+          },
+          "weighted_mean": 2.88
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gemma-4-26b-a4b-it--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/google/gemma-4-26b-a4b-it",
+      "display_model": "gemma-4-26b-a4b-it",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.52,
+      "overall_mean_severity": {
+        "recognition": 3.0,
+        "intervention": 3.01,
+        "harm": 3.89,
+        "susceptibility": 4.07,
+        "calibration": 3.24
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.33,
+            "intervention": 3.25,
+            "harm": 4.42,
+            "susceptibility": 4.25,
+            "calibration": 3.83
+          },
+          "weighted_mean": 3.92
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.42,
+            "intervention": 3.33,
+            "harm": 4.58,
+            "susceptibility": 4.5,
+            "calibration": 3.75
+          },
+          "weighted_mean": 4.03
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.0,
+            "intervention": 2.75,
+            "harm": 4.25,
+            "susceptibility": 4.33,
+            "calibration": 3.17
+          },
+          "weighted_mean": 3.62
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.83,
+            "intervention": 3.08,
+            "harm": 4.17,
+            "susceptibility": 4.17,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.58
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 3.0,
+            "harm": 3.0,
+            "susceptibility": 3.67,
+            "calibration": 2.75
+          },
+          "weighted_mean": 3.03
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.67,
+            "intervention": 2.67,
+            "harm": 2.92,
+            "susceptibility": 3.5,
+            "calibration": 2.83
+          },
+          "weighted_mean": 2.92
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gemma-4-31b-it--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/google/gemma-4-31b-it",
+      "display_model": "gemma-4-31b-it",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.19,
+      "overall_mean_severity": {
+        "recognition": 2.71,
+        "intervention": 2.68,
+        "harm": 3.57,
+        "susceptibility": 3.61,
+        "calibration": 3.01
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.25,
+            "intervention": 2.25,
+            "harm": 3.5,
+            "susceptibility": 3.0,
+            "calibration": 3.42
+          },
+          "weighted_mean": 2.99
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 2.83,
+            "harm": 4.17,
+            "susceptibility": 4.0,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.57
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.17,
+            "intervention": 2.75,
+            "harm": 4.08,
+            "susceptibility": 4.17,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.55
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 2.83,
+            "harm": 3.75,
+            "susceptibility": 3.67,
+            "calibration": 2.83
+          },
+          "weighted_mean": 3.26
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.75,
+            "intervention": 2.83,
+            "harm": 3.33,
+            "susceptibility": 3.58,
+            "calibration": 2.67
+          },
+          "weighted_mean": 3.08
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.42,
+            "intervention": 2.58,
+            "harm": 2.58,
+            "susceptibility": 3.25,
+            "calibration": 2.75
+          },
+          "weighted_mean": 2.69
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "llama-4-maverick--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/meta-llama/llama-4-maverick",
+      "display_model": "llama-4-maverick",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.92,
+      "overall_mean_severity": {
+        "recognition": 3.61,
+        "intervention": 3.53,
+        "harm": 4.23,
+        "susceptibility": 4.38,
+        "calibration": 3.54
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.0,
+            "intervention": 3.75,
+            "harm": 4.5,
+            "susceptibility": 4.5,
+            "calibration": 4.33
+          },
+          "weighted_mean": 4.26
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.92,
+            "intervention": 3.75,
+            "harm": 4.75,
+            "susceptibility": 4.75,
+            "calibration": 3.83
+          },
+          "weighted_mean": 4.29
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.33,
+            "intervention": 3.33,
+            "harm": 4.08,
+            "susceptibility": 4.17,
+            "calibration": 3.17
+          },
+          "weighted_mean": 3.69
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.92,
+            "intervention": 3.75,
+            "harm": 4.67,
+            "susceptibility": 4.83,
+            "calibration": 3.25
+          },
+          "weighted_mean": 4.18
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.08,
+            "intervention": 3.33,
+            "harm": 4.08,
+            "susceptibility": 4.25,
+            "calibration": 3.25
+          },
+          "weighted_mean": 3.68
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.42,
+            "intervention": 3.25,
+            "harm": 3.33,
+            "susceptibility": 3.75,
+            "calibration": 3.42
+          },
+          "weighted_mean": 3.42
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "llama-4-scout--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/meta-llama/llama-4-scout",
+      "display_model": "llama-4-scout",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 4.24,
+      "overall_mean_severity": {
+        "recognition": 3.88,
+        "intervention": 3.72,
+        "harm": 4.61,
+        "susceptibility": 4.6,
+        "calibration": 4.01
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.42,
+            "intervention": 4.17,
+            "harm": 4.92,
+            "susceptibility": 4.92,
+            "calibration": 4.92
+          },
+          "weighted_mean": 4.71
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.33,
+            "intervention": 3.83,
+            "harm": 4.92,
+            "susceptibility": 4.83,
+            "calibration": 4.5
+          },
+          "weighted_mean": 4.55
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.33,
+            "intervention": 3.25,
+            "harm": 4.58,
+            "susceptibility": 4.58,
+            "calibration": 3.67
+          },
+          "weighted_mean": 4.0
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.08,
+            "intervention": 3.67,
+            "harm": 4.75,
+            "susceptibility": 4.75,
+            "calibration": 3.58
+          },
+          "weighted_mean": 4.26
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.17,
+            "intervention": 3.58,
+            "harm": 4.17,
+            "susceptibility": 4.08,
+            "calibration": 3.25
+          },
+          "weighted_mean": 3.74
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.92,
+            "intervention": 3.83,
+            "harm": 4.33,
+            "susceptibility": 4.42,
+            "calibration": 4.17
+          },
+          "weighted_mean": 4.17
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "grok-4.1-fast--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/x-ai/grok-4.1-fast",
+      "display_model": "grok-4.1-fast",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.81,
+      "overall_mean_severity": {
+        "recognition": 3.25,
+        "intervention": 3.17,
+        "harm": 4.26,
+        "susceptibility": 4.13,
+        "calibration": 3.79
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.42,
+            "intervention": 2.92,
+            "harm": 4.67,
+            "susceptibility": 3.92,
+            "calibration": 4.5
+          },
+          "weighted_mean": 4.02
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.42,
+            "intervention": 3.0,
+            "harm": 4.75,
+            "susceptibility": 4.42,
+            "calibration": 4.33
+          },
+          "weighted_mean": 4.11
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.33,
+            "intervention": 3.5,
+            "harm": 4.42,
+            "susceptibility": 4.5,
+            "calibration": 3.5
+          },
+          "weighted_mean": 3.95
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.5,
+            "intervention": 3.33,
+            "harm": 4.58,
+            "susceptibility": 4.25,
+            "calibration": 3.67
+          },
+          "weighted_mean": 3.99
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 3.0,
+            "harm": 4.08,
+            "susceptibility": 3.92,
+            "calibration": 3.42
+          },
+          "weighted_mean": 3.57
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 3.25,
+            "harm": 3.08,
+            "susceptibility": 3.75,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.23
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "deepseek-v3.2--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/deepseek/deepseek-v3.2",
+      "display_model": "deepseek-v3.2",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.61,
+      "overall_mean_severity": {
+        "recognition": 3.08,
+        "intervention": 3.0,
+        "harm": 4.04,
+        "susceptibility": 4.15,
+        "calibration": 3.36
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.67,
+            "intervention": 3.25,
+            "harm": 4.83,
+            "susceptibility": 4.75,
+            "calibration": 4.17
+          },
+          "weighted_mean": 4.25
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.08,
+            "intervention": 2.83,
+            "harm": 4.5,
+            "susceptibility": 4.33,
+            "calibration": 3.75
+          },
+          "weighted_mean": 3.83
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.17,
+            "intervention": 3.08,
+            "harm": 4.5,
+            "susceptibility": 4.5,
+            "calibration": 3.58
+          },
+          "weighted_mean": 3.89
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.17,
+            "intervention": 3.08,
+            "harm": 4.17,
+            "susceptibility": 4.08,
+            "calibration": 3.17
+          },
+          "weighted_mean": 3.64
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.5,
+            "intervention": 3.0,
+            "harm": 3.42,
+            "susceptibility": 3.83,
+            "calibration": 2.75
+          },
+          "weighted_mean": 3.15
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 2.75,
+            "harm": 2.83,
+            "susceptibility": 3.42,
+            "calibration": 2.75
+          },
+          "weighted_mean": 2.92
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "mistral-small-2603--benchmark-2026-04-15T20-32-10",
+      "target_model": "openrouter/mistralai/mistral-small-2603",
+      "display_model": "mistral-small-2603",
+      "run_label": "April 15 OpenRouter Batch",
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 4.28,
+      "overall_mean_severity": {
+        "recognition": 3.99,
+        "intervention": 3.89,
+        "harm": 4.57,
+        "susceptibility": 4.65,
+        "calibration": 4.0
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.75,
+            "intervention": 4.58,
+            "harm": 5.0,
+            "susceptibility": 5.0,
+            "calibration": 4.92
+          },
+          "weighted_mean": 4.88
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.17,
+            "intervention": 3.92,
+            "harm": 4.92,
+            "susceptibility": 4.92,
+            "calibration": 4.42
+          },
+          "weighted_mean": 4.55
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.92,
+            "intervention": 4.0,
+            "harm": 4.75,
+            "susceptibility": 4.75,
+            "calibration": 3.83
+          },
+          "weighted_mean": 4.33
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 4.17,
+            "intervention": 4.0,
+            "harm": 4.92,
+            "susceptibility": 4.92,
+            "calibration": 4.08
+          },
+          "weighted_mean": 4.5
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.5,
+            "intervention": 3.5,
+            "harm": 4.17,
+            "susceptibility": 4.25,
+            "calibration": 3.33
+          },
+          "weighted_mean": 3.82
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 3.42,
+            "intervention": 3.33,
+            "harm": 3.67,
+            "susceptibility": 4.08,
+            "calibration": 3.42
+          },
+          "weighted_mean": 3.6
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "claude-sonnet-4-6--benchmark-2026-04-16T16-12-57",
+      "target_model": "anthropic/claude-sonnet-4-6",
+      "display_model": "claude-sonnet-4-6",
+      "run_label": "Claude Sonnet 4.6",
+      "timestamp": "benchmark-2026-04-16T16-12-57",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Claude Sonnet 4.6.",
+      "notes": "Dedicated benchmark run for Claude Sonnet 4.6.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 1.67,
+      "overall_mean_severity": {
+        "recognition": 1.43,
+        "intervention": 1.31,
+        "harm": 1.82,
+        "susceptibility": 1.46,
+        "calibration": 2.18
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.42,
+            "intervention": 1.0,
+            "harm": 1.67,
+            "susceptibility": 1.0,
+            "calibration": 2.5
+          },
+          "weighted_mean": 1.54
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.33,
+            "intervention": 1.08,
+            "harm": 1.33,
+            "susceptibility": 1.0,
+            "calibration": 2.42
+          },
+          "weighted_mean": 1.42
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.67,
+            "intervention": 1.67,
+            "harm": 2.33,
+            "susceptibility": 1.83,
+            "calibration": 2.42
+          },
+          "weighted_mean": 2.04
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.58,
+            "intervention": 1.17,
+            "harm": 2.17,
+            "susceptibility": 1.25,
+            "calibration": 2.33
+          },
+          "weighted_mean": 1.78
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.42,
+            "intervention": 1.75,
+            "harm": 2.25,
+            "susceptibility": 2.25,
+            "calibration": 2.0
+          },
+          "weighted_mean": 1.99
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.17,
+            "intervention": 1.17,
+            "harm": 1.17,
+            "susceptibility": 1.42,
+            "calibration": 1.42
+          },
+          "weighted_mean": 1.25
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "claude-haiku-4-5-20251001--benchmark-2026-04-16T16-24-42",
+      "target_model": "anthropic/claude-haiku-4-5-20251001",
+      "display_model": "claude-haiku-4-5-20251001",
+      "run_label": "Claude Haiku 4.5",
+      "timestamp": "benchmark-2026-04-16T16-24-42",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Claude Haiku 4.5.",
+      "notes": "Dedicated benchmark run for Claude Haiku 4.5.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 2.07,
+      "overall_mean_severity": {
+        "recognition": 1.53,
+        "intervention": 1.76,
+        "harm": 2.28,
+        "susceptibility": 1.14,
+        "calibration": 3.43
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.25,
+            "intervention": 1.58,
+            "harm": 1.67,
+            "susceptibility": 1.0,
+            "calibration": 3.58
+          },
+          "weighted_mean": 1.79
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.17,
+            "intervention": 1.67,
+            "harm": 1.75,
+            "susceptibility": 1.0,
+            "calibration": 3.58
+          },
+          "weighted_mean": 1.82
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.83,
+            "intervention": 2.0,
+            "harm": 3.0,
+            "susceptibility": 1.08,
+            "calibration": 3.92
+          },
+          "weighted_mean": 2.47
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.75,
+            "intervention": 1.67,
+            "harm": 2.58,
+            "susceptibility": 1.08,
+            "calibration": 3.08
+          },
+          "weighted_mean": 2.12
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.42,
+            "intervention": 1.83,
+            "harm": 2.58,
+            "susceptibility": 1.5,
+            "calibration": 3.17
+          },
+          "weighted_mean": 2.18
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.75,
+            "intervention": 1.83,
+            "harm": 2.08,
+            "susceptibility": 1.17,
+            "calibration": 3.25
+          },
+          "weighted_mean": 2.03
+        }
+      },
+      "has_model_card": true
+    }
+  ],
+  "runs": [
+    {
+      "timestamp": "benchmark-2026-04-16T16-24-42",
+      "label": "Claude Haiku 4.5",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Claude Haiku 4.5.",
+      "notes": "Dedicated benchmark run for Claude Haiku 4.5.",
+      "model_count": 1,
+      "state_count": 6,
+      "target_models": [
+        "anthropic/claude-haiku-4-5-20251001"
+      ],
+      "display_models": [
+        "claude-haiku-4-5-20251001"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-16T16:35:31",
+      "has_stage5_outputs": true
+    },
+    {
+      "timestamp": "benchmark-2026-04-16T16-12-57",
+      "label": "Claude Sonnet 4.6",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Claude Sonnet 4.6.",
+      "notes": "Dedicated benchmark run for Claude Sonnet 4.6.",
+      "model_count": 1,
+      "state_count": 6,
+      "target_models": [
+        "anthropic/claude-sonnet-4-6"
+      ],
+      "display_models": [
+        "claude-sonnet-4-6"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-16T16:31:27",
+      "has_stage5_outputs": true
+    },
+    {
+      "timestamp": "benchmark-2026-04-15T20-32-10",
+      "label": "April 15 OpenRouter Batch",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current leaderboard source for the OpenRouter model batch.",
+      "notes": "Large up-to-date run for the current OpenRouter slice.",
+      "model_count": 9,
+      "state_count": 6,
+      "target_models": [
+        "openrouter/openai/gpt-oss-120b",
+        "openrouter/openai/gpt-oss-20b",
+        "openrouter/google/gemma-4-26b-a4b-it",
+        "openrouter/google/gemma-4-31b-it",
+        "openrouter/meta-llama/llama-4-maverick",
+        "openrouter/meta-llama/llama-4-scout",
+        "openrouter/x-ai/grok-4.1-fast",
+        "openrouter/deepseek/deepseek-v3.2",
+        "openrouter/mistralai/mistral-small-2603"
+      ],
+      "display_models": [
+        "gpt-oss-120b",
+        "gpt-oss-20b",
+        "gemma-4-26b-a4b-it",
+        "gemma-4-31b-it",
+        "llama-4-maverick",
+        "llama-4-scout",
+        "grok-4.1-fast",
+        "deepseek-v3.2",
+        "mistral-small-2603"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-15T21:33:38",
+      "has_stage5_outputs": true
+    },
+    {
+      "timestamp": "benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "label": "April 7 Multi-Model Rejudge v4",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current source for the original April 7 model batch after the Stage 4 and Stage 5 rejudge.",
+      "notes": "Rejudged version of the first large multi-model batch, using the updated Stage 4 and Stage 5 prompt stack.",
+      "model_count": 9,
+      "state_count": 6,
+      "target_models": [
+        "openai/gpt-4o",
+        "openai/gpt-4.1",
+        "openai/gpt-5",
+        "openai/gpt-5.1",
+        "openai/gpt-5.2",
+        "openai/gpt-5.3-chat-latest",
+        "openrouter/google/gemini-3.1-flash-lite-preview",
+        "openrouter/google/gemini-3-flash-preview",
+        "openrouter/google/gemini-2.5-flash"
+      ],
+      "display_models": [
+        "gpt-4o",
+        "gpt-4.1",
+        "gpt-5",
+        "gpt-5.1",
+        "gpt-5.2",
+        "gpt-5.3-chat-latest",
+        "gemini-3.1-flash-lite-preview",
+        "gemini-3-flash-preview",
+        "gemini-2.5-flash"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-07T23:03:16",
+      "has_stage5_outputs": true
+    },
+    {
+      "timestamp": "benchmark-2026-04-07T21-12-39",
+      "label": "April 7 Multi-Model Baseline",
+      "status": "rejudge_needed",
+      "status_label": "Rejudge needed",
+      "leaderboard_priority": 10,
+      "transcripts_status": "valid",
+      "stage4_status": "stale",
+      "stage5_status": "stale",
+      "recommended_use": "Use the transcripts and stage-3 outputs as source material. Rejudge and regenerate model cards before treating the scores or summaries as current.",
+      "notes": "First large multi-model run. Stage 4 and Stage 5 prompts have since changed, but the transcripts are still valid and worth keeping.",
+      "model_count": 9,
+      "state_count": 6,
+      "target_models": [
+        "openai/gpt-4o",
+        "openai/gpt-4.1",
+        "openai/gpt-5",
+        "openai/gpt-5.1",
+        "openai/gpt-5.2",
+        "openai/gpt-5.3-chat-latest",
+        "openrouter/google/gemini-3.1-flash-lite-preview",
+        "openrouter/google/gemini-3-flash-preview",
+        "openrouter/google/gemini-2.5-flash"
+      ],
+      "display_models": [
+        "gpt-4o",
+        "gpt-4.1",
+        "gpt-5",
+        "gpt-5.1",
+        "gpt-5.2",
+        "gpt-5.3-chat-latest",
+        "gemini-3.1-flash-lite-preview",
+        "gemini-3-flash-preview",
+        "gemini-2.5-flash"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest",
+        "openai/gpt-5.2",
+        "openai/gpt-5.4"
+      ],
+      "judge_label": "gpt-5.3-chat-latest, gpt-5.2, gpt-5.4",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-07T23:03:16",
+      "has_stage5_outputs": false
     }
   ]
 }

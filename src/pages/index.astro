@@ -2,13 +2,37 @@
 import Layout from '../layouts/Layout.astro';
 import leaderboardData from '../../public/leaderboard-data.json';
 
-// Filter to best run per model (most states, then most scenarios)
+function shortModelName(model: string) {
+  return model.replace(/^openrouter\//, '').split('/').pop() ?? model;
+}
+
+function displayName(model: string) {
+  return shortModelName(model);
+}
+
+function modelSlug(model: any): string {
+  return model.slug ?? `${encodeURIComponent(displayName(model.target_model))}--${model.timestamp}`;
+}
+
+function isBetterRun(candidate: any, current: any): boolean {
+  const candidatePriority = candidate.leaderboard_priority ?? 0;
+  const currentPriority = current.leaderboard_priority ?? 0;
+  if (candidatePriority !== currentPriority) return candidatePriority > currentPriority;
+  if ((candidate.num_states ?? 0) !== (current.num_states ?? 0)) {
+    return (candidate.num_states ?? 0) > (current.num_states ?? 0);
+  }
+  if ((candidate.total_scenarios ?? 0) !== (current.total_scenarios ?? 0)) {
+    return (candidate.total_scenarios ?? 0) > (current.total_scenarios ?? 0);
+  }
+  return (candidate.timestamp ?? '') > (current.timestamp ?? '');
+}
+
+// Filter to the best available run per model, preferring fresher benchmark outputs.
 function getBestRuns(models: any[]) {
   const best: Record<string, any> = {};
   for (const m of models) {
     const key = m.target_model;
-    if (!best[key] || m.num_states > best[key].num_states ||
-        (m.num_states === best[key].num_states && m.total_scenarios > best[key].total_scenarios)) {
+    if (!best[key] || isBetterRun(m, best[key])) {
       best[key] = m;
     }
   }
@@ -21,10 +45,6 @@ const bestRuns = getBestRuns(leaderboardData.models);
 const dimensions = leaderboardData.dimensions;
 const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
 
-function displayName(model: string) {
-  return model.replace(/^openrouter\//, '').replace(/^openai\//, '');
-}
-
 function severityLabel(val: number | null): string {
   if (val == null) return '';
   if (val <= 1.5) return 'sev-1';
@@ -34,29 +54,8 @@ function severityLabel(val: number | null): string {
   return 'sev-5';
 }
 
-function modelSlug(model: any): string {
-  return encodeURIComponent(displayName(model.target_model)) + '--' + model.timestamp;
-}
-
-// Generate a qualitative summary based on scores
-function qualitativeSummary(model: any): string {
-  const scores = model.overall_mean_severity;
-  const parts: string[] = [];
-
-  if (scores.recognition <= 2.0) parts.push("Reliably detects vulnerability cues");
-  else if (scores.recognition <= 3.0) parts.push("Sometimes misses vulnerability signals");
-  else parts.push("Frequently overlooks warning signs");
-
-  if (scores.harm <= 2.0) parts.push("rarely reinforces harmful patterns");
-  else if (scores.harm <= 3.0) parts.push("occasionally reinforces risky behaviour");
-  else parts.push("tends to validate harmful behaviour");
-
-  if (scores.susceptibility <= 2.0) parts.push("holds firm under pressure");
-  else if (scores.susceptibility <= 3.0) parts.push("can be steered away from safety");
-  else parts.push("easily manipulated past safety boundaries");
-
-  return parts.join(". ") + ".";
-}
+const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ?? {}))).size;
+const judgeLabels = Array.from(new Set(bestRuns.map((m: any) => m.judge_label).filter(Boolean)));
 ---
 
 <Layout title="Vigil — AI Safety Leaderboard" description="Evaluating how AI assistants respond to mentally vulnerable users. Vigil evaluates and ranks them.">
@@ -112,8 +111,8 @@ function qualitativeSummary(model: any): string {
     </div>
 
     <p class="leaderboard-footnote">
-      Scored by <span class="mono">gpt-5.3</span> across {new Set(bestRuns.flatMap((m: any) => Object.keys(m.states))).size} vulnerability states.
-      Click a model to explore individual transcripts.
+      Best available run per model across {totalStates} vulnerability states. Judge setup: {judgeLabels.join(' / ')}.
+      Click a model to view deeper evaluation details.
     </p>
   </section>
 
@@ -567,10 +566,10 @@ function qualitativeSummary(model: any): string {
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
         rows.sort((a, b) => {
-          const colIndex = Array.from(headers).findIndex(h => (h as HTMLElement).dataset.col === col);
-          // offset by 2 (rank + model columns)
-          const aCell = a.children[colIndex + 2] as HTMLElement;
-          const bCell = b.children[colIndex + 2] as HTMLElement;
+          const headerCells = Array.from((th.parentElement as HTMLTableRowElement).children);
+          const cellIndex = headerCells.indexOf(th);
+          const aCell = a.children[cellIndex] as HTMLElement;
+          const bCell = b.children[cellIndex] as HTMLElement;
           const aVal = parseFloat(aCell.textContent || '999');
           const bVal = parseFloat(bCell.textContent || '999');
           return ascending ? aVal - bVal : bVal - aVal;
