@@ -48,10 +48,6 @@ function statusClass(status: string): string {
   return `status-${status}`;
 }
 
-function stageClass(status: string): string {
-  return `stage-${status}`;
-}
-
 function stateDisplayName(key: string): string {
   return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
@@ -59,6 +55,10 @@ function stateDisplayName(key: string): string {
 function barWidth(val: number | null): string {
   if (val == null) return '0%';
   return `${(val / 5) * 100}%`;
+}
+
+function statePageHref(model: any, stateKey: string): string {
+  return `/scenarios/${modelSlug(model)}__${stateKey}/`;
 }
 
 const name = displayName(model.target_model);
@@ -110,12 +110,6 @@ const states = Object.entries(model.states).sort(
 
       <p class="run-use">{model.recommended_use}</p>
 
-      <div class="run-freshness">
-        <span class={`freshness-pill ${stageClass(model.transcripts_status)}`}>Transcripts: {model.transcripts_status}</span>
-        <span class={`freshness-pill ${stageClass(model.stage4_status)}`}>Stage 4: {model.stage4_status}</span>
-        <span class={`freshness-pill ${stageClass(model.stage5_status)}`}>Stage 5: {model.stage5_status}</span>
-      </div>
-
       <p class="run-note">{model.notes}</p>
 
       {runCard && (
@@ -145,6 +139,10 @@ const states = Object.entries(model.states).sort(
         <span class="archetype-label">Archetype</span>
         <span class="archetype-value">{modelCard.archetype}</span>
       </div>
+
+      {modelCard.model_characterization && (
+        <p class="model-characterization">{modelCard.model_characterization}</p>
+      )}
 
       <p class="model-blurb">{modelCard.summary_blurb}</p>
 
@@ -224,7 +222,7 @@ const states = Object.entries(model.states).sort(
     <h2 class="section-label">Performance by vulnerability state</h2>
     <div class="states-grid">
       {states.map(([stateKey, stateData]: [string, any]) => (
-        <div class="state-card" id={stateKey}>
+        <a class="state-card state-card-link" id={stateKey} href={statePageHref(model, stateKey)}>
           <div class="state-header">
             <h3 class="state-name">{stateDisplayName(stateKey)}</h3>
             <span class={`state-overall ${severityLabel(stateData.weighted_mean)}`}>
@@ -254,13 +252,14 @@ const states = Object.entries(model.states).sort(
               <div class="state-dossier">
                 <p class="dossier-text">{dossier.summary}</p>
               </div>
-            ) : (
-              <div class="state-scenarios-placeholder">
-                <p class="placeholder-text">Scenario transcripts coming soon</p>
-              </div>
-            );
+            ) : null;
           })()}
-        </div>
+
+          <div class="state-scenarios-link">
+            <span class="scenarios-link-text">View scenarios and transcripts</span>
+            <span class="scenarios-link-arrow">&rarr;</span>
+          </div>
+        </a>
       ))}
     </div>
   </section>
@@ -325,8 +324,7 @@ const states = Object.entries(model.states).sort(
     font-weight: 600;
   }
 
-  .status-pill,
-  .freshness-pill {
+  .status-pill {
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
@@ -395,13 +393,6 @@ const states = Object.entries(model.states).sort(
     margin: 0 0 0.8rem;
   }
 
-  .run-freshness {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: 0.8rem;
-  }
-
   .run-meta-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -468,6 +459,15 @@ const states = Object.entries(model.states).sort(
     line-height: 1.7;
     color: var(--ink-soft);
     margin-bottom: 1.2rem;
+    max-width: 780px;
+  }
+
+  .model-characterization {
+    font-family: var(--font-serif);
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 0.9rem;
     max-width: 780px;
   }
 
@@ -714,6 +714,13 @@ const states = Object.entries(model.states).sort(
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
+  .state-card-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    height: 100%;
+  }
+
   .state-card:hover {
     border-color: var(--ink-faint);
     box-shadow: 0 2px 8px rgba(44, 36, 24, 0.05);
@@ -794,17 +801,30 @@ const states = Object.entries(model.states).sort(
     font-variant-numeric: tabular-nums;
   }
 
-  .state-scenarios-placeholder {
+  .state-scenarios-link {
     margin-top: 0.8rem;
     padding-top: 0.8rem;
     border-top: 1px dashed var(--parchment);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .placeholder-text {
+  .scenarios-link-text,
+  .scenarios-link-arrow {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--ink-faint);
-    font-style: italic;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .state-card-link:hover .scenarios-link-text,
+  .state-card-link:hover .scenarios-link-arrow {
+    color: var(--ink);
+  }
+
+  .state-card-link:hover .scenarios-link-arrow {
+    transform: translateX(2px);
   }
 
   /* Severity colors */

@@ -1,0 +1,577 @@
+---
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import Layout from '../../layouts/Layout.astro';
+import leaderboardData from '../../../public/leaderboard-data.json';
+
+function severityLabel(val: number | null): string {
+  if (val == null) return '';
+  if (val <= 1.5) return 'sev-1';
+  if (val <= 2.5) return 'sev-2';
+  if (val <= 3.5) return 'sev-3';
+  if (val <= 4.5) return 'sev-4';
+  return 'sev-5';
+}
+
+function barWidth(val: number | null): string {
+  if (val == null) return '0%';
+  return `${(val / 5) * 100}%`;
+}
+
+function cleanTextBlock(text: string | null | undefined): string {
+  if (!text) return '';
+  return text.replace(/\*\*/g, '').replace(/[ \t]+\n/g, '\n').trim();
+}
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+
+  for (const model of leaderboardData.models as any[]) {
+    for (const stateKey of Object.keys(model.states ?? {})) {
+      const stateDataUrl = new URL(
+        `../../../public/state-pages/${model.slug}/${stateKey}.json`,
+        import.meta.url
+      );
+      const stateDataPath = fileURLToPath(stateDataUrl);
+      if (!existsSync(stateDataPath)) {
+        continue;
+      }
+
+      const statePage = JSON.parse(readFileSync(stateDataPath, 'utf-8'));
+      paths.push({
+        params: { slugState: `${model.slug}__${stateKey}` },
+        props: { statePage },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { statePage } = Astro.props;
+const scenarios = statePage.scenarios ?? [];
+---
+
+<Layout
+  title={`${statePage.display_model} - ${statePage.state_label} - Vigil`}
+  description={`Scenario transcripts for ${statePage.display_model} in ${statePage.state_label}.`}
+>
+  <section class="state-page-header">
+    <a href={`/model/${statePage.slug}/`} class="back-link">&larr; Back to model overview</a>
+    <p class="eyebrow">Scenario transcripts</p>
+    <h1 class="page-title">{statePage.display_model}</h1>
+    <div class="page-meta">
+      <span class="meta-chip">
+        <span class="meta-label">State</span>
+        <span class="meta-value">{statePage.state_label}</span>
+      </span>
+      <span class="meta-chip">
+        <span class="meta-label">Weighted</span>
+        <span class={`meta-value ${severityLabel(statePage.state_metrics?.weighted_mean)}`}>
+          {statePage.state_metrics?.weighted_mean?.toFixed(2) ?? '-'}
+        </span>
+      </span>
+      <span class="meta-chip">
+        <span class="meta-label">Scenarios</span>
+        <span class="meta-value">{statePage.state_metrics?.num_scenarios ?? scenarios.length}</span>
+      </span>
+      <span class="meta-chip">
+        <span class="meta-label">Judge</span>
+        <span class="meta-value">{statePage.judge_label}</span>
+      </span>
+    </div>
+
+    {statePage.state_summary && (
+      <p class="state-summary">{statePage.state_summary}</p>
+    )}
+  </section>
+
+  <section class="state-overview">
+    <h2 class="section-label">State aggregate</h2>
+    <div class="overview-bars">
+      {statePage.dimensions.map((dimension: string) => {
+        const val = statePage.state_metrics?.mean_severity?.[dimension];
+        return (
+          <div class="bar-row">
+            <div class="bar-label">
+              <span class="bar-dim">{dimension}</span>
+              <span class={`bar-val ${severityLabel(val)}`}>{val?.toFixed(1) ?? '-'}</span>
+            </div>
+            <div class="bar-track">
+              <div class={`bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
+            </div>
+            <div class="bar-desc">{statePage.dimension_descriptions?.[dimension]}</div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="scenarios-section">
+    <h2 class="section-label">Scenario transcripts</h2>
+    <div class="scenarios-list">
+      {scenarios.map((scenario: any) => (
+        <article class="scenario-card" id={`scenario-${scenario.scenario_number}`}>
+          <header class="scenario-header">
+            <div class="scenario-title-wrap">
+              <p class="scenario-kicker">Scenario {scenario.scenario_number}</p>
+              <h3 class="scenario-title">{scenario.title}</h3>
+            </div>
+            <span class={`scenario-weighted ${severityLabel(scenario.weighted_mean)}`}>
+              {scenario.weighted_mean?.toFixed(2) ?? '-'}
+            </span>
+          </header>
+
+          <div class="scenario-scores">
+            {statePage.dimensions.map((dimension: string) => {
+              const val = scenario.scores?.[dimension];
+              return (
+                <div class="scenario-score-row">
+                  <span class="scenario-dim">{dimension}</span>
+                  <div class="scenario-bar-track">
+                    <div class={`scenario-bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
+                  </div>
+                  <span class={`scenario-val ${severityLabel(val)}`}>{val?.toFixed(1) ?? '-'}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {scenario.description && (
+            <details class="details-block">
+              <summary>Scenario setup</summary>
+              <div class="details-body scenario-description">{cleanTextBlock(scenario.description)}</div>
+            </details>
+          )}
+
+          {scenario.overall_assessment && (
+            <details class="details-block" open>
+              <summary>Judge assessment</summary>
+              <div class="details-body assessment-text">{scenario.overall_assessment}</div>
+            </details>
+          )}
+
+          <div class="transcript-block">
+            <div class="transcript-head">
+              <h4 class="transcript-title">Transcript</h4>
+              <span class="transcript-meta">
+                {scenario.num_turns ?? scenario.transcript?.turns?.length ?? 0} turns
+              </span>
+            </div>
+
+            {scenario.transcript?.turns?.length ? (
+              <div class="turns-list">
+                {scenario.transcript.turns.map((turn: any) => (
+                  <div class="turn-group">
+                    <div class="turn turn-user">
+                      <div class="turn-label">User {turn.turn_number}</div>
+                      <div class="turn-text">{turn.user_message}</div>
+                    </div>
+
+                    {turn.assistant_message && (
+                      <div class="turn turn-assistant">
+                        <div class="turn-label">Assistant</div>
+                        <div class="turn-text">{turn.assistant_message}</div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="transcript-empty">Transcript unavailable for this scenario.</p>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .state-page-header {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .back-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .back-link:hover {
+    color: var(--ink);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-bottom: 0.7rem;
+  }
+
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .page-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .meta-chip {
+    border: 1px solid var(--parchment);
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    background: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  .meta-value {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  .state-summary {
+    max-width: 780px;
+    font-family: var(--font-serif);
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .state-overview,
+  .scenarios-section {
+    margin-bottom: 2.8rem;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--parchment);
+  }
+
+  .overview-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-width: 760px;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.2rem 1rem;
+    align-items: center;
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .bar-dim {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: var(--ink);
+  }
+
+  .bar-val {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bar-track,
+  .scenario-bar-track {
+    background: var(--parchment);
+    overflow: hidden;
+  }
+
+  .bar-track {
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  .bar-fill,
+  .scenario-bar-fill {
+    height: 100%;
+  }
+
+  .bar-fill {
+    border-radius: 4px;
+  }
+
+  .bar-desc {
+    grid-column: 1 / -1;
+    font-family: var(--font-serif);
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .scenarios-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .scenario-card {
+    background: white;
+    border: 1px solid var(--parchment);
+    border-radius: 10px;
+    padding: 1.25rem 1.35rem;
+  }
+
+  .scenario-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .scenario-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 0.35rem;
+  }
+
+  .scenario-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .scenario-weighted {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .scenario-scores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.55rem 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .scenario-score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .scenario-dim {
+    width: 5.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: capitalize;
+    color: var(--ink-muted);
+  }
+
+  .scenario-bar-track {
+    flex: 1;
+    height: 5px;
+    border-radius: 999px;
+  }
+
+  .scenario-bar-fill {
+    border-radius: 999px;
+  }
+
+  .scenario-val {
+    width: 2rem;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .details-block {
+    margin-bottom: 0.9rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.7);
+    padding-top: 0.85rem;
+  }
+
+  .details-block summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+  }
+
+  .details-body {
+    margin-top: 0.7rem;
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+
+  .transcript-block {
+    border-top: 1px solid rgba(236, 228, 216, 0.7);
+    padding-top: 0.95rem;
+  }
+
+  .transcript-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    align-items: baseline;
+    margin-bottom: 0.85rem;
+  }
+
+  .transcript-title {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+
+  .transcript-meta {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+  }
+
+  .turns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .turn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .turn {
+    border-radius: 10px;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .turn-user {
+    background: rgba(236, 228, 216, 0.48);
+    border: 1px solid rgba(236, 228, 216, 0.9);
+  }
+
+  .turn-assistant {
+    background: rgba(107, 124, 94, 0.08);
+    border: 1px solid rgba(107, 124, 94, 0.15);
+  }
+
+  .turn-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 0.35rem;
+  }
+
+  .turn-text {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+
+  .transcript-empty {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .bar-fill.sev-1,
+  .bar-fill.sev-2,
+  .scenario-bar-fill.sev-1,
+  .scenario-bar-fill.sev-2 {
+    background: var(--sage-light);
+  }
+
+  .bar-fill.sev-3,
+  .scenario-bar-fill.sev-3 {
+    background: var(--amber);
+  }
+
+  .bar-fill.sev-4,
+  .scenario-bar-fill.sev-4 {
+    background: var(--orange-warn);
+  }
+
+  .bar-fill.sev-5,
+  .scenario-bar-fill.sev-5 {
+    background: var(--red-bad);
+  }
+
+  .sev-1 { color: var(--green-good); }
+  .sev-2 { color: var(--sage); }
+  .sev-3 { color: var(--yellow-mid); }
+  .sev-4 { color: var(--orange-warn); }
+  .sev-5 { color: var(--red-bad); }
+
+  @media (max-width: 768px) {
+    .bar-row {
+      grid-template-columns: 120px 1fr;
+    }
+
+    .scenario-header,
+    .transcript-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .scenario-scores {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

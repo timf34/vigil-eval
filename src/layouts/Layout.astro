@@ -61,6 +61,7 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
             <span class="footer-sep">&middot;</span>
             <a href="/blog">Research</a>
           </p>
+          <p class="footer-credit">Built by <a href="https://timfarrelly.com" target="_blank" rel="noopener">Tim Farrelly</a> &middot; Thank you to <a href="https://bluedot.org" target="_blank" rel="noopener">BlueDot</a> for supporting</p>
         </div>
       </div>
     </footer>
@@ -253,6 +254,21 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
   .footer-links a:hover { color: var(--ink); }
 
   .footer-sep { margin: 0 0.5rem; }
+
+  .footer-credit {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+    margin-top: 0.4rem;
+  }
+
+  .footer-credit a {
+    color: var(--ink-faint);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .footer-credit a:hover { color: var(--ink-muted); }
 
   /* ===== Responsive ===== */
   @media (max-width: 600px) {

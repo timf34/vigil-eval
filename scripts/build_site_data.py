@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import re
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -16,6 +18,14 @@ DIMENSIONS = [
     "susceptibility",
     "calibration",
 ]
+
+DIMENSION_WEIGHTS = {
+    "recognition": 1,
+    "intervention": 1,
+    "harm": 2,
+    "susceptibility": 1,
+    "calibration": 1,
+}
 
 DIMENSION_DESCRIPTIONS = {
     "recognition": (
@@ -51,6 +61,7 @@ LITMUS_RESULTS_ROOT = VSCODE_ROOT / "MentalHealthLLMs" / "litmus" / "vigil-resul
 REGISTRY_PATH = SITE_ROOT / "scripts" / "run_registry.json"
 LEADERBOARD_OUT = SITE_ROOT / "public" / "leaderboard-data.json"
 MODEL_CARDS_OUT = SITE_ROOT / "public" / "model-cards.json"
+STATE_PAGES_DIR = SITE_ROOT / "public" / "state-pages"
 
 
 def load_json(path: Path) -> dict[str, Any] | None:
@@ -77,6 +88,69 @@ def model_slug(model_name: str, timestamp: str) -> str:
 def sanitize_model_name(model_name: str) -> str:
     """Map a model id to the run directory name."""
     return model_name.replace("/", "__")
+
+
+def state_display_name(state: str) -> str:
+    """Render a state key for UI display."""
+    return state.replace("_", " ").title()
+
+
+def scenario_title(description: str) -> str:
+    """Extract a compact title from the first line of a scenario description."""
+    if not description:
+        return ""
+    first_line = description.strip().splitlines()[0]
+    first_line = first_line.replace("**", "").replace("*", "").strip()
+    first_line = re.sub(
+        r"^scenario\s+\d+\s*:\s*",
+        "",
+        first_line,
+        flags=re.IGNORECASE,
+    )
+    first_line = first_line.strip(' "\'“”')
+    if len(first_line) > 80:
+        return f"{first_line[:77]}..."
+    return first_line
+
+
+def extract_dimension_scores(scores: dict[str, Any]) -> dict[str, float | None]:
+    """Normalize per-dimension severity values from stage4 judgement rows."""
+    normalized: dict[str, float | None] = {}
+    for dimension in DIMENSIONS:
+        value = scores.get(dimension)
+        if isinstance(value, dict):
+            normalized[dimension] = value.get("severity")
+        else:
+            normalized[dimension] = value
+    return normalized
+
+
+def compute_weighted_mean(scores: dict[str, float | None]) -> float | None:
+    """Compute the weighted mean severity for one scenario."""
+    weighted_sum = 0.0
+    total_weight = 0
+    for dimension, weight in DIMENSION_WEIGHTS.items():
+        value = scores.get(dimension)
+        if value is None:
+            continue
+        weighted_sum += value * weight
+        total_weight += weight
+    if total_weight == 0:
+        return None
+    return round(weighted_sum / total_weight, 2)
+
+
+def load_scenario_descriptions(state_dir: Path) -> dict[int, str]:
+    """Load full scenario descriptions from stage2 artifacts."""
+    data = load_json(state_dir / "stage2_ideation.json")
+    if not data:
+        return {}
+    descriptions: dict[int, str] = {}
+    for index, scenario in enumerate(data.get("scenarios", []), start=1):
+        description = scenario.get("description")
+        if description:
+            descriptions[index] = description
+    return descriptions
 
 
 def judge_label(judge_models: list[str], judge_model: str | None) -> str:
@@ -118,15 +192,17 @@ def extract_state_dossiers(model_dir: Path, states: list[str]) -> dict[str, Any]
 def build_model_card_entry(
     slug: str,
     run_meta: dict[str, Any],
-    manifest: dict[str, Any],
     model_name: str,
-    model_dir: Path,
+    state_dossiers: dict[str, Any],
     site_timestamp: str,
 ) -> dict[str, Any] | None:
     """Build one run-specific model-card entry when stage 5 artifacts exist."""
-    card = load_json(model_dir / "model_card.json")
-    states = manifest.get("states", [])
-    state_dossiers = extract_state_dossiers(model_dir, states)
+    card = load_json(
+        LITMUS_RESULTS_ROOT
+        / run_meta.get("source_dir", run_meta["timestamp"])
+        / sanitize_model_name(model_name)
+        / "model_card.json"
+    )
     if not card and not state_dossiers:
         return None
 
@@ -152,6 +228,82 @@ def build_model_card_entry(
         "recurring_risky_patterns": (card or {}).get("recurring_risky_patterns") or [],
         "warning_labels": (card or {}).get("warning_labels") or [],
         "state_dossiers": state_dossiers,
+    }
+
+
+def build_state_page_entry(
+    model_entry: dict[str, Any],
+    run_meta: dict[str, Any],
+    model_name: str,
+    model_dir: Path,
+    state: str,
+    state_dossier: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    """Build one transcript-rich state detail page payload."""
+    state_dir = model_dir / state
+    stage4 = load_json(state_dir / "stage4_judgement.json")
+    if not stage4:
+        return None
+
+    scenario_descriptions = load_scenario_descriptions(state_dir)
+    scenarios: list[dict[str, Any]] = []
+    for judgement in stage4.get("judgements", []):
+        scenario_number = judgement.get("scenario_number")
+        if scenario_number is None:
+            continue
+
+        transcript = load_json(state_dir / "transcripts" / f"scenario_{scenario_number}.json")
+        transcript_metadata = (transcript or {}).get("metadata") or {}
+        description = (
+            scenario_descriptions.get(scenario_number)
+            or transcript_metadata.get("scenario_description")
+            or ""
+        )
+        scores = extract_dimension_scores(judgement.get("scores") or {})
+        scenarios.append(
+            {
+                "scenario_number": scenario_number,
+                "title": scenario_title(description) or f"Scenario {scenario_number}",
+                "description": description,
+                "status": judgement.get("status"),
+                "num_turns": judgement.get("num_turns"),
+                "weighted_mean": compute_weighted_mean(scores),
+                "scores": scores,
+                "overall_assessment": judgement.get("overall_assessment"),
+                "transcript": {
+                    "created_at": transcript_metadata.get("created_at"),
+                    "ended_with_end_token": transcript_metadata.get("ended_with_end_token"),
+                    "turns": [
+                        {
+                            "turn_number": turn.get("turn_number"),
+                            "user_message": turn.get("user_message"),
+                            "assistant_message": turn.get("assistant_message"),
+                        }
+                        for turn in (transcript or {}).get("turns", [])
+                    ],
+                },
+            }
+        )
+
+    scenarios.sort(key=lambda scenario: scenario["scenario_number"])
+    state_metrics = model_entry["states"].get(state)
+    if not state_metrics:
+        return None
+
+    return {
+        "slug": model_entry["slug"],
+        "target_model": model_name,
+        "display_model": model_entry["display_model"],
+        "timestamp": model_entry["timestamp"],
+        "run_label": run_meta["label"],
+        "judge_label": model_entry["judge_label"],
+        "state_key": state,
+        "state_label": state_display_name(state),
+        "state_metrics": state_metrics,
+        "state_summary": (state_dossier or {}).get("summary"),
+        "dimensions": DIMENSIONS,
+        "dimension_descriptions": DIMENSION_DESCRIPTIONS,
+        "scenarios": scenarios,
     }
 
 
@@ -271,7 +423,15 @@ def build_run_entry(
 
 def write_json(path: Path, payload: Any) -> None:
     """Write UTF-8 JSON with stable formatting."""
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def reset_state_pages_dir() -> None:
+    """Clear and recreate generated transcript page data."""
+    if STATE_PAGES_DIR.exists():
+        shutil.rmtree(STATE_PAGES_DIR)
+    STATE_PAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def main() -> None:
@@ -279,6 +439,9 @@ def main() -> None:
     all_models: list[dict[str, Any]] = []
     all_runs: list[dict[str, Any]] = []
     model_cards: dict[str, Any] = {}
+    state_page_count = 0
+
+    reset_state_pages_dir()
 
     for run_meta in registry:
         source_dir = run_meta.get("source_dir", run_meta["timestamp"])
@@ -300,6 +463,7 @@ def main() -> None:
             )
             if not model_entry:
                 continue
+            state_dossiers = extract_state_dossiers(model_dir, manifest.get("states", []))
             if run_meta.get("include_in_leaderboard", True):
                 all_models.append(model_entry)
             run_models.append(model_entry)
@@ -307,13 +471,30 @@ def main() -> None:
             card_entry = build_model_card_entry(
                 model_entry["slug"],
                 run_meta,
-                manifest,
                 model_name,
-                model_dir,
+                state_dossiers,
                 site_timestamp,
             )
             if card_entry:
                 model_cards[model_entry["slug"]] = card_entry
+
+            if run_meta.get("include_in_leaderboard", True):
+                for state in sorted(model_entry["states"]):
+                    state_page = build_state_page_entry(
+                        model_entry,
+                        run_meta,
+                        model_name,
+                        model_dir,
+                        state,
+                        state_dossiers.get(state),
+                    )
+                    if not state_page:
+                        continue
+                    write_json(
+                        STATE_PAGES_DIR / model_entry["slug"] / f"{state}.json",
+                        state_page,
+                    )
+                    state_page_count += 1
 
         all_runs.append(build_run_entry(run_meta, manifest, run_models, site_timestamp))
 
@@ -338,9 +519,11 @@ def main() -> None:
 
     print(f"Wrote {LEADERBOARD_OUT}")
     print(f"Wrote {MODEL_CARDS_OUT}")
+    print(f"Wrote {STATE_PAGES_DIR}")
     print(f"Runs: {len(all_runs)}")
     print(f"Model rows: {len(all_models)}")
     print(f"Model cards: {len(model_cards)}")
+    print(f"State pages: {state_page_count}")
 
 
 if __name__ == "__main__":
