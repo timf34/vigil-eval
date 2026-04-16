@@ -1,4 +1,6 @@
 ---
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import Layout from '../../layouts/Layout.astro';
 import leaderboardData from '../../../public/leaderboard-data.json';
 import modelCardsData from '../../../public/model-cards.json';
@@ -57,14 +59,35 @@ function barWidth(val: number | null): string {
   return `${(val / 5) * 100}%`;
 }
 
-function statePageHref(model: any, stateKey: string): string {
-  return `/scenarios/${modelSlug(model)}__${stateKey}/`;
+function cleanTextBlock(text: string | null | undefined): string {
+  if (!text) return '';
+  return text.replace(/\*\*/g, '').replace(/[ \t]+\n/g, '\n').trim();
+}
+
+function loadStatePages(slug: string, stateMap: Record<string, any>): Record<string, any> {
+  const pages: Record<string, any> = {};
+
+  for (const stateKey of Object.keys(stateMap ?? {})) {
+    const statePageUrl = new URL(
+      `../../../public/state-pages/${slug}/${stateKey}.json`,
+      import.meta.url
+    );
+    const statePagePath = fileURLToPath(statePageUrl);
+    if (!existsSync(statePagePath)) {
+      continue;
+    }
+    pages[stateKey] = JSON.parse(readFileSync(statePagePath, 'utf-8'));
+  }
+
+  return pages;
 }
 
 const name = displayName(model.target_model);
+const slug = modelSlug(model);
 const states = Object.entries(model.states).sort(
   ([, a]: any, [, b]: any) => (b.weighted_mean ?? 0) - (a.weighted_mean ?? 0)
 );
+const statePages = loadStatePages(slug, model.states ?? {});
 ---
 
 <Layout title={`${name} — Vigil`} description={`Detailed Vigil evaluation results for ${name}`}>
@@ -220,47 +243,132 @@ const states = Object.entries(model.states).sort(
   <!-- Per-state breakdown -->
   <section class="states-section">
     <h2 class="section-label">Performance by vulnerability state</h2>
-    <div class="states-grid">
-      {states.map(([stateKey, stateData]: [string, any]) => (
-        <a class="state-card state-card-link" id={stateKey} href={statePageHref(model, stateKey)}>
-          <div class="state-header">
-            <h3 class="state-name">{stateDisplayName(stateKey)}</h3>
-            <span class={`state-overall ${severityLabel(stateData.weighted_mean)}`}>
-              {stateData.weighted_mean?.toFixed(2)}
-            </span>
-          </div>
-          <div class="state-meta">{stateData.num_scenarios} scenarios</div>
+    <div class="states-list">
+      {states.map(([stateKey, stateData]: [string, any]) => {
+        const statePage = statePages[stateKey];
+        const scenarios = statePage?.scenarios ?? [];
+        const dossier = modelCard?.state_dossiers?.[stateKey];
 
-          <div class="state-scores">
-            {dimensions.map((d: string) => {
-              const val = stateData.mean_severity?.[d];
-              return (
-                <div class="state-score-row">
-                  <span class="state-dim">{d.slice(0, 5)}.</span>
-                  <div class="state-bar-track">
-                    <div class={`state-bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
-                  </div>
-                  <span class={`state-val ${severityLabel(val)}`}>{val?.toFixed(1)}</span>
+        return (
+          <details class="state-toggle" id={stateKey}>
+            <summary class="state-toggle-summary">
+              <div class="state-card">
+                <div class="state-header">
+                  <h3 class="state-name">{stateDisplayName(stateKey)}</h3>
+                  <span class={`state-overall ${severityLabel(stateData.weighted_mean)}`}>
+                    {stateData.weighted_mean?.toFixed(2)}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
+                <div class="state-meta">{stateData.num_scenarios} scenarios</div>
 
-          {(() => {
-            const dossier = modelCard?.state_dossiers?.[stateKey];
-            return dossier?.summary ? (
-              <div class="state-dossier">
-                <p class="dossier-text">{dossier.summary}</p>
+                <div class="state-scores">
+                  {dimensions.map((d: string) => {
+                    const val = stateData.mean_severity?.[d];
+                    return (
+                      <div class="state-score-row">
+                        <span class="state-dim">{d.slice(0, 5)}.</span>
+                        <div class="state-bar-track">
+                          <div class={`state-bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
+                        </div>
+                        <span class={`state-val ${severityLabel(val)}`}>{val?.toFixed(1)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {dossier?.summary && (
+                  <div class="state-dossier">
+                    <p class="dossier-text">{dossier.summary}</p>
+                  </div>
+                )}
+
+                <div class="state-scenarios-link">
+                  <span class="scenarios-link-text">
+                    {scenarios.length ? `${scenarios.length} expandable scenarios` : 'Scenario data unavailable'}
+                  </span>
+                  <span class="scenarios-link-arrow">+</span>
+                </div>
               </div>
-            ) : null;
-          })()}
+            </summary>
 
-          <div class="state-scenarios-link">
-            <span class="scenarios-link-text">View scenarios and transcripts</span>
-            <span class="scenarios-link-arrow">&rarr;</span>
-          </div>
-        </a>
-      ))}
+            <div class="state-toggle-body">
+              {scenarios.length ? (
+                <div class="scenario-toggle-list">
+                  {scenarios.map((scenario: any) => (
+                    <details class="scenario-toggle">
+                      <summary class="scenario-toggle-summary">
+                        <div class="scenario-summary-head">
+                          <div class="scenario-title-wrap">
+                            <span class="scenario-kicker">Scenario {scenario.scenario_number}</span>
+                            <span class="scenario-title">{scenario.title}</span>
+                          </div>
+                          <span class={`scenario-weighted ${severityLabel(scenario.weighted_mean)}`}>
+                            {scenario.weighted_mean?.toFixed(2) ?? '—'}
+                          </span>
+                        </div>
+
+                        <div class="scenario-mini-scores">
+                          {dimensions.map((d: string) => {
+                            const val = scenario.scores?.[d];
+                            return (
+                              <span class={`scenario-mini-pill ${severityLabel(val)}`}>
+                                {d.slice(0, 5)} {val?.toFixed(1) ?? '—'}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </summary>
+
+                      <div class="scenario-toggle-body">
+                        {scenario.description && (
+                          <div class="scenario-block">
+                            <h4 class="scenario-block-heading">Scenario setup</h4>
+                            <div class="scenario-copy">{cleanTextBlock(scenario.description)}</div>
+                          </div>
+                        )}
+
+                        {scenario.overall_assessment && (
+                          <div class="scenario-block">
+                            <h4 class="scenario-block-heading">Judge assessment</h4>
+                            <div class="scenario-copy">{scenario.overall_assessment}</div>
+                          </div>
+                        )}
+
+                        <div class="transcript-block">
+                          <h4 class="scenario-block-heading">Transcript</h4>
+                          {scenario.transcript?.turns?.length ? (
+                            <div class="turns-list">
+                              {scenario.transcript.turns.map((turn: any) => (
+                                <div class="turn-group">
+                                  <div class="turn turn-user">
+                                    <div class="turn-label">User {turn.turn_number}</div>
+                                    <div class="turn-text">{turn.user_message}</div>
+                                  </div>
+
+                                  {turn.assistant_message && (
+                                    <div class="turn turn-assistant">
+                                      <div class="turn-label">Assistant</div>
+                                      <div class="turn-text">{turn.assistant_message}</div>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p class="state-empty">Transcript unavailable for this scenario.</p>
+                          )}
+                        </div>
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              ) : (
+                <p class="state-empty">Scenario transcript data unavailable for this state.</p>
+              )}
+            </div>
+          </details>
+        );
+      })}
     </div>
   </section>
 
@@ -700,30 +808,38 @@ const states = Object.entries(model.states).sort(
     margin-bottom: 1.5rem;
   }
 
-  .states-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.2rem;
+  .states-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .state-card {
+  .state-toggle {
     background: white;
     border: 1px solid var(--parchment);
-    border-radius: 8px;
-    padding: 1.2rem 1.4rem;
+    border-radius: 10px;
+    overflow: hidden;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
-  .state-card-link {
-    color: inherit;
-    text-decoration: none;
-    display: block;
-    height: 100%;
-  }
-
-  .state-card:hover {
+  .state-toggle[open] {
     border-color: var(--ink-faint);
     box-shadow: 0 2px 8px rgba(44, 36, 24, 0.05);
+  }
+
+  .state-toggle-summary,
+  .scenario-toggle-summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .state-toggle-summary::-webkit-details-marker,
+  .scenario-toggle-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .state-card {
+    padding: 1.2rem 1.4rem;
   }
 
   .state-header {
@@ -818,13 +934,178 @@ const states = Object.entries(model.states).sort(
     transition: color 0.15s ease, transform 0.15s ease;
   }
 
-  .state-card-link:hover .scenarios-link-text,
-  .state-card-link:hover .scenarios-link-arrow {
+  .state-toggle-summary:hover .scenarios-link-text,
+  .state-toggle-summary:hover .scenarios-link-arrow {
     color: var(--ink);
   }
 
-  .state-card-link:hover .scenarios-link-arrow {
+  .state-toggle-summary:hover .scenarios-link-arrow {
     transform: translateX(2px);
+  }
+
+  .state-toggle[open] .scenarios-link-arrow {
+    transform: rotate(45deg);
+    color: var(--ink);
+  }
+
+  .state-toggle-body {
+    padding: 0 1.4rem 1.4rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.7);
+    background: rgba(250, 247, 240, 0.45);
+  }
+
+  .scenario-toggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .scenario-toggle {
+    background: white;
+    border: 1px solid rgba(236, 228, 216, 0.95);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .scenario-toggle[open] {
+    border-color: rgba(44, 36, 24, 0.18);
+  }
+
+  .scenario-toggle-summary {
+    padding: 0.95rem 1rem;
+  }
+
+  .scenario-summary-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .scenario-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .scenario-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  .scenario-title {
+    font-family: var(--font-serif);
+    font-size: 0.98rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .scenario-weighted {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .scenario-mini-scores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+
+  .scenario-mini-pill {
+    border-radius: 999px;
+    padding: 0.22rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    border: 1px solid currentColor;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scenario-toggle-body {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.8);
+  }
+
+  .scenario-block,
+  .transcript-block {
+    margin-top: 0.9rem;
+  }
+
+  .scenario-block-heading {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    margin-bottom: 0.55rem;
+  }
+
+  .scenario-copy {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+
+  .turns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .turn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .turn {
+    border-radius: 10px;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .turn-user {
+    background: rgba(236, 228, 216, 0.48);
+    border: 1px solid rgba(236, 228, 216, 0.9);
+  }
+
+  .turn-assistant {
+    background: rgba(107, 124, 94, 0.08);
+    border: 1px solid rgba(107, 124, 94, 0.15);
+  }
+
+  .turn-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 0.35rem;
+  }
+
+  .turn-text {
+    font-family: var(--font-serif);
+    font-size: 0.94rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+
+  .state-empty {
+    margin-top: 1rem;
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    font-style: italic;
   }
 
   /* Severity colors */
@@ -852,12 +1133,26 @@ const states = Object.entries(model.states).sort(
       grid-template-columns: 120px 1fr;
     }
 
-    .states-grid {
-      grid-template-columns: 1fr;
-    }
-
     .model-meta-row {
       gap: 1rem;
+    }
+
+    .state-header,
+    .scenario-summary-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .state-card,
+    .state-toggle-body {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .scenario-toggle-summary,
+    .scenario-toggle-body {
+      padding-left: 0.85rem;
+      padding-right: 0.85rem;
     }
   }
 </style>
