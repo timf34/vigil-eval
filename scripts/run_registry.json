@@ -37,6 +37,18 @@
     "notes": "Large up-to-date run for the current OpenRouter slice."
   },
   {
+    "timestamp": "benchmark-2026-04-16T15-44-28",
+    "label": "Claude Sonnet 4",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current single-model run for Claude Sonnet 4.",
+    "notes": "Dedicated benchmark run for Claude Sonnet 4 (claude-sonnet-4-20250514). Last 3 states merged in from benchmark-2026-04-16T16-09-26 after circuit breaker tripped on the original run."
+  },
+  {
     "timestamp": "benchmark-2026-04-16T16-12-57",
     "label": "Claude Sonnet 4.6",
     "status": "current",

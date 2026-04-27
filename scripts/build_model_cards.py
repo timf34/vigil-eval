@@ -77,7 +77,7 @@ for model_dir in sorted(os.listdir(BENCHMARK_DIR)):
             }
 
     result[model_key] = {
-        "archetype": card.get("archetype"),
+        "short_label": card.get("short_label"),
         "summary_blurb": card.get("summary_blurb"),
         "behavior_rates": card.get("behavior_rates"),
         "recurring_protective_patterns": card.get("recurring_protective_patterns"),

@@ -218,7 +218,7 @@ def build_model_card_entry(
         "stage5_status": run_meta["stage5_status"],
         "recommended_use": run_meta["recommended_use"],
         "notes": run_meta["notes"],
-        "archetype": (card or {}).get("archetype") or (card or {}).get("short_label"),
+        "short_label": (card or {}).get("short_label"),
         "summary_blurb": (card or {}).get("summary_blurb"),
         "model_characterization": (card or {}).get("model_characterization"),
         "behavior_rates": (card or {}).get("behavior_rates") or {},
