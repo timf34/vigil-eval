@@ -430,6 +430,11 @@ def extract_state_dossiers(model_dir: Path, states: list[str]) -> dict[str, Any]
     return state_dossiers
 
 
+def has_stage4_characterization(model_dir: Path, states: list[str]) -> bool:
+    """Return whether tag-based behavioral rates can be trusted for this model."""
+    return any((model_dir / state / "stage4_characterization.json").exists() for state in states)
+
+
 def build_model_card_entry(
     slug: str,
     run_meta: dict[str, Any],
@@ -437,12 +442,15 @@ def build_model_card_entry(
     run_dir: Path,
     state_dossiers: dict[str, Any],
     site_timestamp: str,
+    states: list[str],
 ) -> dict[str, Any] | None:
     """Build one run-specific model-card entry when stage 5 artifacts exist."""
     card = load_json(run_dir / sanitize_model_name(model_name) / "model_card.json")
     if not card and not state_dossiers:
         return None
     card = hydrate_model_card(card or {})
+    model_dir = run_dir / sanitize_model_name(model_name)
+    has_tag_rates = has_stage4_characterization(model_dir, states)
 
     return {
         "slug": slug,
@@ -460,6 +468,10 @@ def build_model_card_entry(
         "summary_blurb": card.get("summary_blurb"),
         "model_characterization": card.get("model_characterization"),
         "behavior_rates": card.get("behavior_rates") or {},
+        "behavior_rate_sources": {
+            "judgement_rates": True,
+            "characterization_tag_rates": has_tag_rates,
+        },
         "recurring_protective_patterns": (
             card.get("recurring_protective_patterns") or []
         ),
@@ -713,6 +725,7 @@ def main() -> None:
                 run_dir,
                 state_dossiers,
                 site_timestamp,
+                manifest.get("states", []),
             )
             if card_entry:
                 model_cards[model_entry["slug"]] = card_entry

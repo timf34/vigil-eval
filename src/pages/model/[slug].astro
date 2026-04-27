@@ -84,6 +84,17 @@ const states = Object.entries(model.states).sort(
 );
 const statePages = loadStatePages(slug, model.states ?? {});
 const characterization = modelCard?.model_characterization || modelCard?.summary_blurb || 'Model characterization unavailable for this run.';
+const tagRateKeys = new Set([
+  'question_first_rate',
+  'caveated_compliance_rate',
+  'sycophancy_rate',
+  'constructive_safe_help_rate',
+  'over_refusal_rate',
+]);
+const hasTagRates = modelCard?.behavior_rate_sources?.characterization_tag_rates !== false;
+const visibleBehaviorRates = Object.entries(modelCard?.behavior_rates ?? {}).filter(
+  ([key]) => hasTagRates || !tagRateKeys.has(key)
+);
 ---
 
 <Layout title={`${name} — Vigil`} description={`Detailed Vigil evaluation results for ${name}`}>
@@ -106,18 +117,18 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
         <span class="meta-label">States</span>
         <span class="meta-value">{model.num_states}</span>
       </span>
+      {modelCard?.short_label && (
+        <span class="meta-item meta-profile">
+          <span class="meta-label">Profile</span>
+          <span class="meta-value profile-value">{modelCard.short_label}</span>
+        </span>
+      )}
     </div>
   </section>
 
   <!-- ===== Model Card ===== -->
   {modelCard && (
     <section class="model-card-section">
-
-      <div class="archetype-row">
-        <span class="archetype-label">Signature</span>
-        <span class="archetype-value">{modelCard.short_label}</span>
-      </div>
-
       <p class="model-characterization">{characterization}</p>
 
       {modelCard.summary_blurb && modelCard.summary_blurb !== characterization && (
@@ -142,7 +153,7 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
         <div class="rates-col">
           <h3 class="pattern-heading">Behavioral rates</h3>
           <dl class="rates-list">
-            {Object.entries(modelCard.behavior_rates ?? {}).map(([key, val]: [string, any]) => (
+            {visibleBehaviorRates.map(([key, val]: [string, any]) => (
               <div class="rate-row">
                 <dt class="rate-key">{key.replace(/_/g, ' ')}</dt>
                 <dd class="rate-val">
@@ -154,6 +165,11 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
               </div>
             ))}
           </dl>
+          {!hasTagRates && (
+            <p class="rates-note">
+              Tag-derived behavioral rates are unavailable for this run.
+            </p>
+          )}
         </div>
 
         {(modelCard.recurring_protective_patterns?.length > 0 || modelCard.recurring_risky_patterns?.length > 0) && (
@@ -373,33 +389,38 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
   .model-meta-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.35rem;
   }
 
   .meta-item {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.18rem;
   }
 
   .meta-label {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.07em;
     color: var(--ink-faint);
   }
 
   .meta-value {
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--ink-soft);
     font-weight: 500;
   }
 
   .overall-val {
-    font-size: 1.3rem;
+    font-size: 1.05rem;
     font-weight: 600;
+  }
+
+  .profile-value {
+    font-size: 1rem;
+    color: var(--ink-soft);
   }
 
   /* ===== Model Card ===== */
@@ -407,29 +428,6 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
     padding: 0 0 2.5rem;
     margin-bottom: 3rem;
     border-bottom: 1px solid var(--parchment);
-  }
-
-  .archetype-row {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 1.15rem;
-  }
-
-  .archetype-label {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--ink-faint);
-  }
-
-  .archetype-value {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    font-style: italic;
-    font-weight: 600;
-    color: var(--ink);
   }
 
   .model-blurb {
@@ -601,6 +599,15 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
+
+  .rates-note {
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: 0.8rem;
+   }
 
   /* ===== State Dossier ===== */
   .state-dossier {
