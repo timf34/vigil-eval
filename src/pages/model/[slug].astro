@@ -13,26 +13,69 @@ function displayName(m: string) {
   return shortModelName(m);
 }
 
-function modelSlug(model: any): string {
+function dataModelSlug(model: any): string {
   return model.slug ?? `${encodeURIComponent(displayName(model.target_model))}--${model.timestamp}`;
 }
 
 export function getStaticPaths() {
   const paths: any[] = [];
+  const addedSlugs = new Set<string>();
+  const best: Record<string, any> = {};
 
-  for (const model of leaderboardData.models) {
-    const slug = model.slug ?? `${encodeURIComponent(shortModelName(model.target_model))}--${model.timestamp}`;
+  function shortName(modelName: string) {
+    return modelName.replace(/^openrouter\//, '').split('/').pop() ?? modelName;
+  }
+
+  function cleanSlug(model: any) {
+    return encodeURIComponent(shortName(model.target_model));
+  }
+
+  function runSlug(model: any) {
+    return model.slug ?? `${encodeURIComponent(shortName(model.target_model))}--${model.timestamp}`;
+  }
+
+  function isBetter(candidate: any, current: any): boolean {
+    const candidatePriority = candidate.leaderboard_priority ?? 0;
+    const currentPriority = current.leaderboard_priority ?? 0;
+    if (candidatePriority !== currentPriority) return candidatePriority > currentPriority;
+    if ((candidate.num_states ?? 0) !== (current.num_states ?? 0)) {
+      return (candidate.num_states ?? 0) > (current.num_states ?? 0);
+    }
+    if ((candidate.total_scenarios ?? 0) !== (current.total_scenarios ?? 0)) {
+      return (candidate.total_scenarios ?? 0) > (current.total_scenarios ?? 0);
+    }
+    return (candidate.timestamp ?? '') > (current.timestamp ?? '');
+  }
+
+  function addPath(slug: string, model: any) {
+    if (addedSlugs.has(slug)) return;
+    addedSlugs.add(slug);
     paths.push({
       params: { slug },
       props: { model },
     });
   }
 
+  for (const model of leaderboardData.models as any[]) {
+    const key = model.target_model;
+    if (!best[key] || isBetter(model, best[key])) {
+      best[key] = model;
+    }
+  }
+
+  for (const model of Object.values(best)) {
+    addPath(cleanSlug(model), model);
+  }
+
+  for (const model of leaderboardData.models as any[]) {
+    addPath(runSlug(model), model);
+  }
+
   return paths;
 }
 
 const { model } = Astro.props;
-const modelCard = (modelCardsData as any)[modelSlug(model)] ?? null;
+const modelCard = (modelCardsData as any)[dataModelSlug(model)] ?? null;
 const dimensions = leaderboardData.dimensions;
 const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
 
@@ -78,7 +121,7 @@ function loadStatePages(slug: string, stateMap: Record<string, any>): Record<str
 }
 
 const name = displayName(model.target_model);
-const slug = modelSlug(model);
+const slug = dataModelSlug(model);
 const states = Object.entries(model.states).sort(
   ([, a]: any, [, b]: any) => (b.weighted_mean ?? 0) - (a.weighted_mean ?? 0)
 );

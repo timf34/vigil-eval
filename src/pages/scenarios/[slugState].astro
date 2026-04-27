@@ -23,6 +23,14 @@ function cleanTextBlock(text: string | null | undefined): string {
   return text.replace(/\*\*/g, '').replace(/[ \t]+\n/g, '\n').trim();
 }
 
+function shortModelName(model: string) {
+  return model.replace(/^openrouter\//, '').split('/').pop() ?? model;
+}
+
+function cleanModelSlug(model: string | null | undefined): string {
+  return encodeURIComponent(shortModelName(model ?? ''));
+}
+
 export function getStaticPaths() {
   const paths: any[] = [];
 
@@ -50,6 +58,7 @@ export function getStaticPaths() {
 
 const { statePage } = Astro.props;
 const scenarios = statePage.scenarios ?? [];
+const modelOverviewSlug = cleanModelSlug(statePage.target_model ?? statePage.display_model);
 ---
 
 <Layout
@@ -57,7 +66,7 @@ const scenarios = statePage.scenarios ?? [];
   description={`Scenario transcripts for ${statePage.display_model} in ${statePage.state_label}.`}
 >
   <section class="state-page-header">
-    <a href={`/model/${statePage.slug}/`} class="back-link">&larr; Back to model overview</a>
+    <a href={`/model/${modelOverviewSlug}/`} class="back-link">&larr; Back to model overview</a>
     <p class="eyebrow">Scenario transcripts</p>
     <h1 class="page-title">{statePage.display_model}</h1>
     <div class="page-meta">

@@ -10,8 +10,8 @@ function displayName(model: string) {
   return shortModelName(model);
 }
 
-function modelSlug(model: any): string {
-  return model.slug ?? `${encodeURIComponent(displayName(model.target_model))}--${model.timestamp}`;
+function cleanModelSlug(model: any): string {
+  return encodeURIComponent(displayName(model.target_model));
 }
 
 function isBetterRun(candidate: any, current: any): boolean {
@@ -88,10 +88,10 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
         </thead>
         <tbody>
           {bestRuns.map((model: any, i: number) => (
-            <tr class="leaderboard-row" data-model-slug={modelSlug(model)}>
+            <tr class="leaderboard-row" data-model-slug={cleanModelSlug(model)}>
               <td class="col-rank rank-num">{i + 1}</td>
               <td class="col-model">
-                <a href={`/model/${modelSlug(model)}`} class="model-link">
+                <a href={`/model/${cleanModelSlug(model)}`} class="model-link">
                   <span class="model-name">{displayName(model.target_model)}</span>
                 </a>
               </td>
