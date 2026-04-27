@@ -1,0 +1,109 @@
+{
+  "redirects": [
+    {
+      "source": "/model/gpt-4o--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gpt-4o/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-4.1--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gpt-4.1/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-5--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gpt-5/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-5.1--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gpt-5.1/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-5.2--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gpt-5.2/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-5.3-chat-latest--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gpt-5.3-chat-latest/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gemini-3.1-flash-lite-preview--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gemini-3.1-flash-lite-preview/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gemini-3-flash-preview--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gemini-3-flash-preview/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gemini-2.5-flash--benchmark-2026-04-07T21-12-39-rejudge-v4",
+      "destination": "/model/gemini-2.5-flash/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-oss-120b--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/gpt-oss-120b/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gpt-oss-20b--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/gpt-oss-20b/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gemma-4-26b-a4b-it--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/gemma-4-26b-a4b-it/",
+      "permanent": true
+    },
+    {
+      "source": "/model/gemma-4-31b-it--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/gemma-4-31b-it/",
+      "permanent": true
+    },
+    {
+      "source": "/model/llama-4-maverick--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/llama-4-maverick/",
+      "permanent": true
+    },
+    {
+      "source": "/model/llama-4-scout--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/llama-4-scout/",
+      "permanent": true
+    },
+    {
+      "source": "/model/grok-4.1-fast--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/grok-4.1-fast/",
+      "permanent": true
+    },
+    {
+      "source": "/model/deepseek-v3.2--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/deepseek-v3.2/",
+      "permanent": true
+    },
+    {
+      "source": "/model/mistral-small-2603--benchmark-2026-04-15T20-32-10",
+      "destination": "/model/mistral-small-2603/",
+      "permanent": true
+    },
+    {
+      "source": "/model/claude-sonnet-4-20250514--benchmark-2026-04-16T15-44-28",
+      "destination": "/model/claude-sonnet-4-20250514/",
+      "permanent": true
+    },
+    {
+      "source": "/model/claude-sonnet-4-6--benchmark-2026-04-16T16-12-57",
+      "destination": "/model/claude-sonnet-4-6/",
+      "permanent": true
+    },
+    {
+      "source": "/model/claude-haiku-4-5-20251001--benchmark-2026-04-16T16-24-42",
+      "destination": "/model/claude-haiku-4-5-20251001/",
+      "permanent": true
+    }
+  ]
+}
