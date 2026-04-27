@@ -55,7 +55,6 @@ function severityLabel(val: number | null): string {
 }
 
 const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ?? {}))).size;
-const judgeLabels = Array.from(new Set(bestRuns.map((m: any) => m.judge_label).filter(Boolean)));
 ---
 
 <Layout title="Vigil — AI Safety Leaderboard" description="Evaluating how AI assistants respond to mentally vulnerable users. Vigil evaluates and ranks them.">
@@ -111,7 +110,7 @@ const judgeLabels = Array.from(new Set(bestRuns.map((m: any) => m.judge_label).f
     </div>
 
     <p class="leaderboard-footnote">
-      Best available run per model across {totalStates} vulnerability states. Judge setup: {judgeLabels.join(' / ')}.
+      Best available run per model across {totalStates} vulnerability states.
       Click a model to view deeper evaluation details.
     </p>
   </section>

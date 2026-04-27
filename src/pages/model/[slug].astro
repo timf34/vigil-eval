@@ -33,7 +33,6 @@ export function getStaticPaths() {
 
 const { model } = Astro.props;
 const modelCard = (modelCardsData as any)[modelSlug(model)] ?? null;
-const runCard = (leaderboardData.runs as any[]).find((run: any) => run.timestamp === model.timestamp) ?? null;
 const dimensions = leaderboardData.dimensions;
 const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
 
@@ -44,10 +43,6 @@ function severityLabel(val: number | null): string {
   if (val <= 3.5) return 'sev-3';
   if (val <= 4.5) return 'sev-4';
   return 'sev-5';
-}
-
-function statusClass(status: string): string {
-  return `status-${status}`;
 }
 
 function stateDisplayName(key: string): string {
@@ -88,6 +83,7 @@ const states = Object.entries(model.states).sort(
   ([, a]: any, [, b]: any) => (b.weighted_mean ?? 0) - (a.weighted_mean ?? 0)
 );
 const statePages = loadStatePages(slug, model.states ?? {});
+const characterization = modelCard?.model_characterization || modelCard?.summary_blurb || 'Model characterization unavailable for this run.';
 ---
 
 <Layout title={`${name} — Vigil`} description={`Detailed Vigil evaluation results for ${name}`}>
@@ -103,10 +99,6 @@ const statePages = loadStatePages(slug, model.states ?? {});
         </span>
       </span>
       <span class="meta-item">
-        <span class="meta-label">Judge</span>
-        <span class="meta-value">{model.judge_label}</span>
-      </span>
-      <span class="meta-item">
         <span class="meta-label">Scenarios</span>
         <span class="meta-value">{model.total_scenarios}</span>
       </span>
@@ -114,43 +106,6 @@ const statePages = loadStatePages(slug, model.states ?? {});
         <span class="meta-label">States</span>
         <span class="meta-value">{model.num_states}</span>
       </span>
-      <span class="meta-item">
-        <span class="meta-label">Run</span>
-        <span class="meta-value">{model.timestamp}</span>
-      </span>
-    </div>
-  </section>
-
-  <section class="run-provenance-section">
-    <div class="run-provenance-card">
-      <div class="run-provenance-head">
-        <div>
-          <h2 class="section-label run-section-label">Run Provenance</h2>
-          <p class="run-name">{model.run_label}</p>
-        </div>
-        <span class={`status-pill ${statusClass(model.status)}`}>{model.status_label}</span>
-      </div>
-
-      <p class="run-use">{model.recommended_use}</p>
-
-      <p class="run-note">{model.notes}</p>
-
-      {runCard && (
-        <div class="run-meta-grid">
-          <div class="run-meta-item">
-            <span class="run-meta-label">Batch</span>
-            <span class="run-meta-value">{runCard.model_count} models / {runCard.state_count} states</span>
-          </div>
-          <div class="run-meta-item">
-            <span class="run-meta-label">Evaluator</span>
-            <span class="run-meta-value">{displayName(runCard.evaluator_model)}</span>
-          </div>
-          <div class="run-meta-item">
-            <span class="run-meta-label">Profile model</span>
-            <span class="run-meta-value">{displayName(runCard.characterization_model)}</span>
-          </div>
-        </div>
-      )}
     </div>
   </section>
 
@@ -163,11 +118,11 @@ const statePages = loadStatePages(slug, model.states ?? {});
         <span class="archetype-value">{modelCard.short_label}</span>
       </div>
 
-      {modelCard.model_characterization && (
-        <p class="model-characterization">{modelCard.model_characterization}</p>
-      )}
+      <p class="model-characterization">{characterization}</p>
 
-      <p class="model-blurb">{modelCard.summary_blurb}</p>
+      {modelCard.summary_blurb && modelCard.summary_blurb !== characterization && (
+        <p class="model-blurb">{modelCard.summary_blurb}</p>
+      )}
 
       {modelCard.warning_labels?.length > 0 && (
         <div class="warning-labels">
@@ -377,7 +332,7 @@ const statePages = loadStatePages(slug, model.states ?? {});
 <style>
   /* ===== Model Header ===== */
   .model-header {
-    padding: 2.5rem 0 2rem;
+    padding: 2.5rem 0 1.4rem;
   }
 
   .back-link {
@@ -432,117 +387,18 @@ const statePages = loadStatePages(slug, model.states ?? {});
     font-weight: 600;
   }
 
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999px;
-    padding: 0.22rem 0.55rem;
-    font-family: var(--font-mono);
-    font-size: 0.64rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-
-  .status-current,
-  .stage-current,
-  .stage-valid {
-    background: rgba(107, 124, 94, 0.12);
-    color: var(--sage);
-    border-color: rgba(107, 124, 94, 0.18);
-  }
-
-  .status-rejudge_needed,
-  .stage-stale {
-    background: rgba(181, 111, 71, 0.12);
-    color: var(--orange-warn);
-    border-color: rgba(181, 111, 71, 0.18);
-  }
-
-  /* ===== Run Provenance ===== */
-  .run-provenance-section {
-    margin-bottom: 2rem;
-  }
-
-  .run-provenance-card {
-    background: white;
-    border: 1px solid var(--parchment);
-    border-radius: 8px;
-    padding: 1.3rem 1.5rem;
-  }
-
-  .run-provenance-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .run-section-label {
-    margin-bottom: 0.4rem;
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .run-name {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--ink);
-    margin: 0;
-  }
-
-  .run-use,
-  .run-note {
-    font-family: var(--font-serif);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin: 0 0 0.8rem;
-  }
-
-  .run-meta-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0.8rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--parchment);
-  }
-
-  .run-meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .run-meta-label {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ink-faint);
-  }
-
-  .run-meta-value {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    color: var(--ink);
-  }
-
   /* ===== Model Card ===== */
   .model-card-section {
-    background: white;
-    border: 1px solid var(--parchment);
-    border-radius: 8px;
-    padding: 1.8rem 2rem;
+    padding: 0 0 2.5rem;
     margin-bottom: 3rem;
+    border-bottom: 1px solid var(--parchment);
   }
 
   .archetype-row {
     display: flex;
     align-items: baseline;
     gap: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.15rem;
   }
 
   .archetype-label {
@@ -555,7 +411,7 @@ const statePages = loadStatePages(slug, model.states ?? {});
 
   .archetype-value {
     font-family: var(--font-serif);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-style: italic;
     font-weight: 600;
     color: var(--ink);
@@ -563,20 +419,20 @@ const statePages = loadStatePages(slug, model.states ?? {});
 
   .model-blurb {
     font-family: var(--font-serif);
-    font-size: 1rem;
+    font-size: 1.08rem;
     line-height: 1.7;
     color: var(--ink-soft);
-    margin-bottom: 1.2rem;
-    max-width: 780px;
+    margin-bottom: 1.4rem;
+    max-width: 820px;
   }
 
   .model-characterization {
     font-family: var(--font-serif);
-    font-size: 1.02rem;
-    line-height: 1.6;
+    font-size: 2rem;
+    line-height: 1.25;
     color: var(--ink);
-    margin-bottom: 0.9rem;
-    max-width: 780px;
+    margin-bottom: 1.1rem;
+    max-width: 940px;
   }
 
   .warning-labels {
@@ -606,7 +462,7 @@ const statePages = loadStatePages(slug, model.states ?? {});
     display: grid;
     grid-template-columns: 1fr 1fr 1.2fr;
     gap: 2rem;
-    padding-top: 1.2rem;
+    padding-top: 1.4rem;
     border-top: 1px solid var(--parchment);
   }
 
@@ -1126,6 +982,10 @@ const statePages = loadStatePages(slug, model.states ?? {});
   }
 
   @media (max-width: 768px) {
+    .model-characterization {
+      font-size: 1.45rem;
+    }
+
     .card-columns {
       grid-template-columns: 1fr;
     }
