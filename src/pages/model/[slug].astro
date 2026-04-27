@@ -125,33 +125,20 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
       )}
 
       {modelCard.warning_labels?.length > 0 && (
-        <div class="warning-labels">
-          {modelCard.warning_labels.map((w: string) => (
-            <div class="warning-label">
-              <span class="warning-icon">&#9651;</span>
-              {w}
-            </div>
-          ))}
+        <div class="concerns-block">
+          <h3 class="pattern-heading concerns-heading">Clinical concerns</h3>
+          <div class="concerns-list">
+            {modelCard.warning_labels.map((w: string) => (
+              <div class="concern-item">
+                <span class="concern-icon">&#9651;</span>
+                {w}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      <div class="card-columns">
-        <div class="pattern-col">
-          <h3 class="pattern-heading protective">Protective patterns</h3>
-          <ul class="pattern-list">
-            {modelCard.recurring_protective_patterns?.map((p: string) => (
-              <li class="pattern-item protective">{p}</li>
-            ))}
-          </ul>
-        </div>
-        <div class="pattern-col">
-          <h3 class="pattern-heading risky">Risky patterns</h3>
-          <ul class="pattern-list">
-            {modelCard.recurring_risky_patterns?.map((p: string) => (
-              <li class="pattern-item risky">{p}</li>
-            ))}
-          </ul>
-        </div>
+      <div class="model-drilldown">
         <div class="rates-col">
           <h3 class="pattern-heading">Behavioral rates</h3>
           <dl class="rates-list">
@@ -168,6 +155,34 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
             ))}
           </dl>
         </div>
+
+        {(modelCard.recurring_protective_patterns?.length > 0 || modelCard.recurring_risky_patterns?.length > 0) && (
+          <div class="patterns-panel">
+            <h3 class="pattern-heading">Recurring patterns</h3>
+            <div class="patterns-grid">
+              {modelCard.recurring_protective_patterns?.length > 0 && (
+                <div class="pattern-col">
+                  <h4 class="pattern-subheading protective">Protective</h4>
+                  <ul class="pattern-list">
+                    {modelCard.recurring_protective_patterns.map((p: string) => (
+                      <li class="pattern-item protective">{p}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {modelCard.recurring_risky_patterns?.length > 0 && (
+                <div class="pattern-col">
+                  <h4 class="pattern-subheading risky">Risky</h4>
+                  <ul class="pattern-list">
+                    {modelCard.recurring_risky_patterns.map((p: string) => (
+                      <li class="pattern-item risky">{p}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
     </section>
@@ -435,33 +450,40 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
     max-width: 940px;
   }
 
-  .warning-labels {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin-bottom: 1.5rem;
+  .concerns-block {
+    margin: 1.5rem 0 1.6rem;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(236, 228, 216, 0.8);
+    border-bottom: 1px solid rgba(236, 228, 216, 0.8);
   }
 
-  .warning-label {
+  .concerns-heading {
+    margin-bottom: 0.65rem;
+  }
+
+  .concerns-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.45rem 1.1rem;
+  }
+
+  .concern-item {
     font-family: var(--font-serif);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--orange-warn);
-    line-height: 1.5;
+    line-height: 1.45;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.55rem;
     align-items: baseline;
   }
 
-  .warning-icon {
+  .concern-icon {
     font-size: 0.6rem;
     flex-shrink: 0;
     margin-top: 0.15rem;
   }
 
-  .card-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.2fr;
-    gap: 2rem;
+  .model-drilldown {
     padding-top: 1.4rem;
     border-top: 1px solid var(--parchment);
   }
@@ -474,6 +496,29 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
     color: var(--ink-muted);
     margin-bottom: 0.75rem;
   }
+
+  .patterns-panel {
+    margin-top: 1.35rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--parchment);
+  }
+
+  .patterns-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem;
+  }
+
+  .pattern-subheading {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  .pattern-subheading.protective { color: var(--sage); }
+  .pattern-subheading.risky { color: var(--orange-warn); }
 
   .pattern-list {
     list-style: none;
@@ -507,9 +552,9 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
   .pattern-item.risky::before { background: var(--orange-warn); }
 
   .rates-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem 1.4rem;
     margin: 0;
   }
 
@@ -973,11 +1018,9 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
 
   /* ===== Responsive ===== */
   @media (max-width: 900px) {
-    .card-columns {
-      grid-template-columns: 1fr 1fr;
-    }
-    .rates-col {
-      grid-column: 1 / -1;
+    .rates-list,
+    .patterns-grid {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -986,9 +1029,6 @@ const characterization = modelCard?.model_characterization || modelCard?.summary
       font-size: 1.45rem;
     }
 
-    .card-columns {
-      grid-template-columns: 1fr;
-    }
     .bar-row {
       grid-template-columns: 120px 1fr;
     }
