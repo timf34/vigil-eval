@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import leaderboardData from '../../public/leaderboard-data.json';
+import modelCardsData from '../../public/model-cards.json';
 
 function shortModelName(model: string) {
   return model.replace(/^openrouter\//, '').split('/').pop() ?? model;
@@ -12,6 +13,14 @@ function displayName(model: string) {
 
 function cleanModelSlug(model: any): string {
   return encodeURIComponent(displayName(model.target_model));
+}
+
+function dataModelSlug(model: any): string {
+  return model.slug ?? `${encodeURIComponent(displayName(model.target_model))}--${model.timestamp}`;
+}
+
+function modelProfile(model: any): string {
+  return (modelCardsData as any)[dataModelSlug(model)]?.short_label ?? '';
 }
 
 function isBetterRun(candidate: any, current: any): boolean {
@@ -79,11 +88,7 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
             <th class="col-rank">#</th>
             <th class="col-model">Model</th>
             <th class="col-overall sortable" data-col="overall">Overall</th>
-            {dimensions.map((d: string) => (
-              <th class="col-dim sortable" data-col={d} title={dimDescriptions[d]}>
-                {d.charAt(0).toUpperCase() + d.slice(1, 5) + '.'}
-              </th>
-            ))}
+            <th class="col-profile">Profile</th>
           </tr>
         </thead>
         <tbody>
@@ -98,11 +103,9 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
               <td class={`col-overall score-cell overall-score ${severityLabel(model.overall_weighted_mean)}`}>
                 {model.overall_weighted_mean?.toFixed(2) ?? '—'}
               </td>
-              {dimensions.map((d: string) => (
-                <td class={`col-dim score-cell ${severityLabel(model.overall_mean_severity?.[d])}`}>
-                  {model.overall_mean_severity?.[d]?.toFixed(1) ?? '—'}
-                </td>
-              ))}
+              <td class="col-profile profile-cell">
+                <span class="profile-text">{modelProfile(model)}</span>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -280,8 +283,10 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
   }
 
   .col-rank { width: 2.5rem; text-align: center; }
+  .col-model { width: 34%; }
   .col-overall { text-align: center; }
   .col-dim { text-align: center; }
+  .col-profile { width: 45%; }
   .col-meta { text-align: center; }
 
   .rank-num {
@@ -320,6 +325,18 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
   .overall-score {
     font-size: 1rem;
     font-weight: 600;
+  }
+
+  .profile-cell {
+    color: var(--ink-soft);
+  }
+
+  .profile-text {
+    display: inline-block;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.35;
+    color: var(--ink-soft);
   }
 
   .sev-1 { color: var(--green-good); }
