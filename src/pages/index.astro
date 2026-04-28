@@ -62,6 +62,42 @@ const totalConversationTurns = Object.values(statePageModules).reduce((sum: numb
     return scenarioSum + (scenario.num_turns ?? scenario.transcript?.turns?.length ?? 0);
   }, 0);
 }, 0);
+const latestDate = new Date(leaderboardData.generated_at).toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+const coverageItems = [
+  {
+    title: 'Voice chatbots present greater risk to mental health',
+    source: 'STAT',
+    date: 'Apr 16, 2026',
+    href: 'https://www.statnews.com/2026/04/16/voice-chatbots-ai-psychosis-mental-health/',
+    summary: 'Psychiatrists argue that voice-first AI may create stronger risks for vulnerable users.',
+  },
+  {
+    title: 'AI is giving bad advice to flatter its users',
+    source: 'AP News',
+    date: 'Mar 26, 2026',
+    href: 'https://apnews.com/article/ai-sycophancy-chatbots-science-study-8dc61e69278b661cab1e53d38b4173b6',
+    summary: 'A new study finds chatbots can over-affirm users, including around harmful choices.',
+  },
+  {
+    title: 'Experts warn over rising use of AI for mental health support',
+    source: 'The Guardian',
+    date: 'Aug 30, 2025',
+    href: 'https://www.theguardian.com/society/2025/aug/30/therapists-warn-ai-chatbots-mental-health-support',
+    summary: 'Clinicians report concerns about dependence, self-diagnosis, and amplified distress.',
+  },
+  {
+    title: 'Chatbots unsafe for teen mental health support',
+    source: 'Axios',
+    date: 'Nov 20, 2025',
+    href: 'https://www.axios.com/2025/11/20/teen-mental-health-common-sense-media-chatbots',
+    summary: 'Reporting on a Common Sense Media and Stanford review of major AI assistants.',
+  },
+];
 
 function severityLabel(val: number | null): string {
   if (val == null) return '';
@@ -86,18 +122,41 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
     <p class="hero-subtitle">
       Vigil evaluates how AI assistants respond to mentally vulnerable users across five dimensions. Lower scores are safer.
     </p>
-    <div class="stat-grid" aria-label="Vigil evaluation statistics">
-      <div class="stat-card">
-        <span class="stat-label">Models evaluated</span>
+    <div class="hero-meta" aria-label="Vigil evaluation statistics">
+      <div class="hero-metric">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 11.5c1.7 0 3-1.4 3-3s-1.3-3-3-3-3 1.4-3 3 1.3 3 3 3Z" />
+          <path d="M6.5 12c1.5 0 2.7-1.2 2.7-2.7S8 6.6 6.5 6.6 3.8 7.8 3.8 9.3 5 12 6.5 12Z" />
+          <path d="M11.2 19v-1.5c0-2.1 2.1-3.7 4.8-3.7s4.8 1.6 4.8 3.7V19" />
+          <path d="M2.5 18.8v-1.3c0-1.8 1.7-3.2 4-3.2 1.1 0 2 .3 2.7.8" />
+        </svg>
+        <span>Models evaluated</span>
         <strong>{bestRuns.length}</strong>
       </div>
-      <div class="stat-card">
-        <span class="stat-label">Scenarios</span>
+      <span class="hero-meta-dot" aria-hidden="true">·</span>
+      <div class="hero-metric">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5.5h14v10H8.8L5 19.2V5.5Z" />
+          <path d="M8.2 9h7.6M8.2 12h5" />
+        </svg>
+        <span>Scenarios</span>
         <strong>{totalScenarios.toLocaleString('en-US')}</strong>
       </div>
-      <div class="stat-card">
-        <span class="stat-label">Conversation turns</span>
+      <span class="hero-meta-dot" aria-hidden="true">·</span>
+      <div class="hero-metric">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 8h10M7 12h6" />
+          <path d="M4.5 5.5h15v10h-8L7.2 19v-3.5H4.5v-10Z" />
+        </svg>
+        <span>Conversation turns</span>
         <strong>{totalConversationTurns.toLocaleString('en-US')}</strong>
+      </div>
+      <div class="hero-updated">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 4v3M18 4v3M4.5 9h15M6 6h12c.8 0 1.5.7 1.5 1.5v11c0 .8-.7 1.5-1.5 1.5H6c-.8 0-1.5-.7-1.5-1.5v-11C4.5 6.7 5.2 6 6 6Z" />
+        </svg>
+        <span>Updated</span>
+        <strong>{latestDate}</strong>
       </div>
     </div>
   </section>
@@ -112,6 +171,7 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
             <th class="col-model">Model</th>
             <th class="col-overall sortable" data-col="overall">Overall</th>
             <th class="col-profile">Profile</th>
+            <th class="col-more" aria-label="Open model"></th>
           </tr>
         </thead>
         <tbody>
@@ -128,6 +188,11 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
               </td>
               <td class="col-profile profile-cell">
                 <span class="profile-text">{modelProfile(model)}</span>
+              </td>
+              <td class="col-more">
+                <a href={`/model/${cleanModelSlug(model)}`} class="row-chevron" aria-label={`View ${displayName(model.target_model)} model card`}>
+                  <span aria-hidden="true">></span>
+                </a>
               </td>
             </tr>
           ))}
@@ -196,12 +261,22 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
   </section>
 
   <!-- ===== News / Press ===== -->
-  <section class="press-section">
-    <h2 class="section-label">Why this matters</h2>
-    <div class="press-grid">
-      <div class="press-placeholder">
-        <p class="press-note">Links to news articles and coverage will appear here as Vigil gains visibility.</p>
+  <section class="news-section" id="coverage">
+    <div class="news-head">
+      <div>
+        <h2 class="section-label">In the news</h2>
+        <p>Coverage and reporting on AI systems interacting with vulnerable users.</p>
       </div>
+      <a href="https://news.google.com/search?q=AI%20chatbots%20mental%20health%20safety" target="_blank" rel="noopener">View all coverage -></a>
+    </div>
+    <div class="coverage-grid">
+      {coverageItems.map((item) => (
+        <a class="coverage-item" href={item.href} target="_blank" rel="noopener">
+          <h3>{item.title}</h3>
+          <p class="coverage-meta">{item.source} <span>·</span> {item.date}</p>
+          <p>{item.summary}</p>
+        </a>
+      ))}
     </div>
   </section>
 
@@ -849,6 +924,349 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
       grid-template-columns: repeat(3, minmax(0, 1fr));
       max-width: 780px;
     }
+  }
+
+  /* ===== Final reference alignment ===== */
+  .hero {
+    padding: clamp(2rem, 4.4vw, 3.25rem) 0 2.35rem;
+  }
+
+  .hero-subtitle {
+    margin-bottom: 1.45rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.65rem, 1.7vw, 1.35rem);
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+  }
+
+  .hero-metric,
+  .hero-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .hero-updated {
+    margin-left: auto;
+  }
+
+  .hero-metric svg,
+  .hero-updated svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--sage);
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hero-metric strong,
+  .hero-updated strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .hero-meta-dot {
+    color: var(--ink-faint);
+  }
+
+  .leaderboard-section {
+    margin: 0.6rem 0 2rem;
+  }
+
+  .leaderboard-wrap {
+    overflow-x: auto;
+    background: rgba(255, 253, 249, 0.58);
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 10px 30px rgba(44, 36, 24, 0.035);
+  }
+
+  .leaderboard-heading {
+    min-width: 760px;
+    padding: 1rem 1.35rem;
+    border-bottom: 1px solid var(--parchment);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 253, 249, 0.35);
+  }
+
+  .leaderboard-heading h2 {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .leaderboard-heading h2 span {
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+
+  .leaderboard-heading a {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    color: var(--sage);
+    text-decoration: none;
+  }
+
+  .leaderboard-heading a:hover {
+    color: var(--ink);
+  }
+
+  .leaderboard {
+    min-width: 760px;
+  }
+
+  .leaderboard th {
+    background: rgba(247, 241, 232, 0.55);
+    padding: 0.78rem 1.35rem;
+    color: var(--ink);
+  }
+
+  .leaderboard th small {
+    display: block;
+    margin-top: 0.12rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard td {
+    padding: 0.82rem 1.35rem;
+    vertical-align: middle;
+  }
+
+  .col-rank {
+    width: 3rem;
+  }
+
+  .col-more {
+    width: 3rem;
+    text-align: center;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    text-align: left;
+    margin: 0;
+    padding: 0.95rem 1.35rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.6);
+    line-height: 1.6;
+  }
+
+  .leaderboard-footnote a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .news-section {
+    margin: 0 0 2.2rem;
+  }
+
+  .news-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .news-head .section-label {
+    margin-bottom: 0.25rem;
+    padding-bottom: 0;
+  }
+
+  .news-head p {
+    font-family: var(--font-serif);
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+
+  .news-head > a {
+    flex: 0 0 auto;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--sage);
+  }
+
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .coverage-item {
+    display: block;
+    min-height: 158px;
+    padding: 0 1.6rem 0 1.8rem;
+    color: var(--ink);
+    border-left: 1px solid var(--parchment);
+  }
+
+  .coverage-item:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .coverage-item h3 {
+    max-width: 19ch;
+    margin: 0 0 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  .coverage-meta {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+  }
+
+  .coverage-meta span {
+    margin: 0 0.4rem;
+    color: var(--ink-faint);
+  }
+
+  .coverage-item p:last-child {
+    font-family: var(--font-serif);
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .coverage-item:hover h3 {
+    color: var(--sage);
+  }
+
+  @media (max-width: 900px) {
+    .hero-meta {
+      flex-wrap: wrap;
+    }
+
+    .hero-updated {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .coverage-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 1.8rem;
+    }
+
+    .coverage-item:nth-child(odd) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-meta {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .hero-meta-dot {
+      display: none;
+    }
+
+    .news-head {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .coverage-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .coverage-item,
+    .coverage-item:first-child {
+      min-height: auto;
+      padding: 0 0 1.15rem;
+      border-left: 0;
+      border-bottom: 1px solid var(--parchment);
+    }
+  }
+
+  /* Preserve the original leaderboard visual style with only chevrons added. */
+  .leaderboard-section {
+    margin: 1rem 0 4rem;
+  }
+
+  .leaderboard-wrap {
+    background: white;
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 6px 24px rgba(44, 36, 24, 0.03);
+  }
+
+  .leaderboard {
+    min-width: 0;
+  }
+
+  .leaderboard th {
+    background: var(--cream-warm);
+    padding: 0.75rem 0.8rem;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard th small {
+    display: none;
+  }
+
+  .leaderboard td {
+    padding: 0.9rem 0.8rem;
+    vertical-align: top;
+  }
+
+  .col-rank {
+    width: 2.5rem;
+  }
+
+  .col-more {
+    width: 2.75rem;
+    text-align: center;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  .row-chevron {
+    display: block;
+    color: var(--sage);
+    text-decoration: none;
+  }
+
+  .row-chevron:hover {
+    color: var(--ink);
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0;
+    border-top: 0;
+    line-height: 1.6;
   }
 </style>
 
