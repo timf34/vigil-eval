@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import leaderboardData from '../../public/leaderboard-data.json';
 import modelCardsData from '../../public/model-cards.json';
 
+const statePageModules = import.meta.glob('../../public/state-pages/**/*.json', { eager: true });
+
 function shortModelName(model: string) {
   return model.replace(/^openrouter\//, '').split('/').pop() ?? model;
 }
@@ -53,6 +55,13 @@ function getBestRuns(models: any[]) {
 const bestRuns = getBestRuns(leaderboardData.models);
 const dimensions = leaderboardData.dimensions;
 const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
+const totalScenarios = bestRuns.reduce((sum: number, model: any) => sum + (model.total_scenarios ?? 0), 0);
+const totalConversationTurns = Object.values(statePageModules).reduce((sum: number, module: any) => {
+  const page = module.default ?? module;
+  return sum + (page.scenarios ?? []).reduce((scenarioSum: number, scenario: any) => {
+    return scenarioSum + (scenario.num_turns ?? scenario.transcript?.turns?.length ?? 0);
+  }, 0);
+}, 0);
 
 function severityLabel(val: number | null): string {
   if (val == null) return '';
@@ -70,13 +79,27 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
 
   <!-- ===== Hero ===== -->
   <section class="hero">
-    <h1 class="hero-title">Vigil</h1>
+    <h1 class="hero-title">
+      <span>The public leaderboard for</span>
+      <span>AI mental health safety.</span>
+    </h1>
     <p class="hero-subtitle">
-      Evaluating how AI assistants respond to mentally vulnerable users.
+      Vigil evaluates how AI assistants respond to mentally vulnerable users across five dimensions. Lower scores are safer.
     </p>
-    <p class="hero-note">
-      Severity scale 1&ndash;5 &middot; Lower is safer
-    </p>
+    <div class="stat-grid" aria-label="Vigil evaluation statistics">
+      <div class="stat-card">
+        <span class="stat-label">Models evaluated</span>
+        <strong>{bestRuns.length}</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Scenarios</span>
+        <strong>{totalScenarios.toLocaleString('en-US')}</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Conversation turns</span>
+        <strong>{totalConversationTurns.toLocaleString('en-US')}</strong>
+      </div>
+    </div>
   </section>
 
   <!-- ===== Leaderboard ===== -->
@@ -555,6 +578,277 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
   @media (max-width: 480px) {
     .hero-title { font-size: 2.2rem; }
     .dims-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Reference-inspired landing treatment ===== */
+  .hero {
+    text-align: left;
+    padding: clamp(2rem, 5vw, 3.6rem) 0 2rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-mono);
+    max-width: 840px;
+    font-size: clamp(2.35rem, 5.2vw, 4.05rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.16;
+    margin: 0 0 1.05rem;
+    color: var(--ink);
+  }
+
+  .hero-title span {
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 0 2rem;
+    font-style: normal;
+    line-height: 1.65;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-card {
+    min-height: 116px;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    background: rgba(255, 253, 249, 0.58);
+    box-shadow: 0 1px 2px rgba(21, 19, 16, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .stat-card strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+    line-height: 1;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .stat-card .stat-date {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .leaderboard-section {
+    margin: 1rem 0 2rem;
+  }
+
+  .leaderboard-wrap,
+  .dim-card,
+  .pipeline-card,
+  .press-placeholder {
+    background: rgba(255, 253, 249, 0.58);
+  }
+
+  .leaderboard-wrap {
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 12px 34px rgba(44, 36, 24, 0.035);
+  }
+
+  .leaderboard-heading {
+    min-width: 760px;
+    padding: 1rem 1.35rem;
+    border-bottom: 1px solid var(--parchment);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .leaderboard-heading h2 {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .leaderboard-heading a {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    color: var(--sage);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .leaderboard {
+    min-width: 760px;
+  }
+
+  .leaderboard th {
+    background: rgba(247, 241, 232, 0.55);
+    padding: 0.78rem 1.35rem;
+  }
+
+  .leaderboard th small {
+    display: block;
+    margin-top: 0.12rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard td {
+    padding: 0.82rem 1.35rem;
+    vertical-align: middle;
+  }
+
+  .col-rank { width: 3rem; }
+
+  .col-more {
+    width: 3rem;
+    text-align: center;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  .model-name {
+    font-size: 0.91rem;
+  }
+
+  .profile-text {
+    font-size: 0.98rem;
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    text-align: left;
+    margin: 0;
+    padding: 0.95rem 1.35rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.6);
+  }
+
+  .section-label {
+    border-bottom: 0;
+  }
+
+  .dims-section,
+  .about-section,
+  .press-section {
+    margin-bottom: 2rem;
+  }
+
+  .dims-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .dim-card {
+    padding: 1.2rem 1.25rem;
+  }
+
+  .dim-desc {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    .stat-grid,
+    .dims-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero {
+      padding-top: 1.8rem;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .stat-grid,
+    .dims-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+      min-height: 94px;
+    }
+  }
+
+  /* Restore the original leaderboard treatment. */
+  .leaderboard-wrap {
+    background: white;
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 6px 24px rgba(44, 36, 24, 0.03);
+  }
+
+  .leaderboard {
+    min-width: 0;
+  }
+
+  .leaderboard th {
+    background: var(--cream-warm);
+    padding: 0.75rem 0.8rem;
+  }
+
+  .leaderboard td {
+    padding: 0.9rem 0.8rem;
+    vertical-align: top;
+  }
+
+  .col-rank {
+    width: 2.5rem;
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0;
+    border-top: 0;
+    line-height: 1.6;
+  }
+
+  /* Keep the hero headline to the intended two-line lockup. */
+  .hero-title {
+    max-width: none;
+    font-size: clamp(1.55rem, 4.6vw, 4.05rem);
+  }
+
+  .hero-title span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 600px) {
+    .hero-title {
+      font-size: clamp(1.28rem, 5.8vw, 1.8rem);
+    }
+  }
+
+  @media (min-width: 901px) {
+    .stat-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: 780px;
+    }
   }
 </style>
 
