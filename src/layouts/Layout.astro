@@ -31,6 +31,7 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
           <img src="/flower.svg" alt="" class="nav-flower" aria-hidden="true" />
           <span class="nav-title">vigil</span>
         </a>
+        <div class="nav-status" aria-label="Site status">Draft / Work in progress</div>
         <div class="nav-links">
           <a href="/">Leaderboard</a>
           <a href="/blog">Research</a>
@@ -151,9 +152,10 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
     max-width: var(--max-width-wide);
     margin: 0 auto;
     padding: 0.85rem var(--gutter);
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
   }
 
   .nav-logo {
@@ -162,6 +164,7 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
     gap: 0.5rem;
     color: var(--ink);
     text-decoration: none;
+    justify-self: start;
   }
 
   .nav-logo:hover { color: var(--ink); }
@@ -185,8 +188,25 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
     text-transform: lowercase;
   }
 
+  .nav-status {
+    justify-self: center;
+    padding: 0.18rem 0.48rem;
+    border: 1px solid var(--amber-pale);
+    border-radius: 4px;
+    background: rgba(245, 230, 204, 0.48);
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   .nav-links {
     display: flex;
+    justify-self: end;
     gap: clamp(1rem, 3vw, 2.3rem);
     font-family: var(--font-serif);
     font-size: 0.95rem;
@@ -275,6 +295,7 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
   /* ===== Responsive ===== */
   @media (max-width: 600px) {
     .nav-inner { padding: 0.75rem var(--gutter); }
+    .nav-status { display: none; }
     .nav-links { gap: 0.8rem; font-size: 0.82rem; }
     .nav-flower { height: 22px; }
     .footer-inner { flex-direction: column; text-align: center; }
