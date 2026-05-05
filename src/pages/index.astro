@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Vigil" description="Vigil is currently being updated.">
+  <section class="holding-page">
+    <h1>Vigil</h1>
+    <p>We are updating this page.</p>
+  </section>
+</Layout>
+
+<style>
+  .holding-page {
+    min-height: 52vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 680px;
+    padding: clamp(3rem, 10vw, 7rem) 0;
+  }
+
+  .holding-page h1 {
+    font-family: var(--font-mono);
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .holding-page p {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+</style>
