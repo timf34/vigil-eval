@@ -1,38 +1,1323 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import leaderboardData from '../../public/leaderboard-data.json';
+import modelCardsData from '../../public/model-cards.json';
+
+const statePageModules = import.meta.glob('../../public/state-pages/**/*.json', { eager: true });
+
+function shortModelName(model: string) {
+  return model.replace(/^openrouter\//, '').split('/').pop() ?? model;
+}
+
+function displayName(model: string) {
+  return shortModelName(model);
+}
+
+function cleanModelSlug(model: any): string {
+  return encodeURIComponent(displayName(model.target_model));
+}
+
+function dataModelSlug(model: any): string {
+  return model.slug ?? `${encodeURIComponent(displayName(model.target_model))}--${model.timestamp}`;
+}
+
+function modelProfile(model: any): string {
+  return (modelCardsData as any)[dataModelSlug(model)]?.short_label ?? '';
+}
+
+function isBetterRun(candidate: any, current: any): boolean {
+  const candidatePriority = candidate.leaderboard_priority ?? 0;
+  const currentPriority = current.leaderboard_priority ?? 0;
+  if (candidatePriority !== currentPriority) return candidatePriority > currentPriority;
+  if ((candidate.num_states ?? 0) !== (current.num_states ?? 0)) {
+    return (candidate.num_states ?? 0) > (current.num_states ?? 0);
+  }
+  if ((candidate.total_scenarios ?? 0) !== (current.total_scenarios ?? 0)) {
+    return (candidate.total_scenarios ?? 0) > (current.total_scenarios ?? 0);
+  }
+  return (candidate.timestamp ?? '') > (current.timestamp ?? '');
+}
+
+// Filter to the best available run per model, preferring fresher benchmark outputs.
+function getBestRuns(models: any[]) {
+  const best: Record<string, any> = {};
+  for (const m of models) {
+    const key = m.target_model;
+    if (!best[key] || isBetterRun(m, best[key])) {
+      best[key] = m;
+    }
+  }
+  return Object.values(best).sort((a: any, b: any) =>
+    (a.overall_weighted_mean ?? 999) - (b.overall_weighted_mean ?? 999)
+  );
+}
+
+const bestRuns = getBestRuns(leaderboardData.models);
+const dimensions = leaderboardData.dimensions;
+const dimDescriptions = leaderboardData.dimension_descriptions as Record<string, string>;
+const totalScenarios = bestRuns.reduce((sum: number, model: any) => sum + (model.total_scenarios ?? 0), 0);
+const totalConversationTurns = Object.values(statePageModules).reduce((sum: number, module: any) => {
+  const page = module.default ?? module;
+  return sum + (page.scenarios ?? []).reduce((scenarioSum: number, scenario: any) => {
+    return scenarioSum + (scenario.num_turns ?? scenario.transcript?.turns?.length ?? 0);
+  }, 0);
+}, 0);
+const latestDate = new Date(leaderboardData.generated_at).toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+const coverageItems = [
+  {
+    title: 'Voice chatbots present greater risk to mental health',
+    source: 'STAT',
+    date: 'Apr 16, 2026',
+    href: 'https://www.statnews.com/2026/04/16/voice-chatbots-ai-psychosis-mental-health/',
+    summary: 'Psychiatrists argue that voice-first AI may create stronger risks for vulnerable users.',
+  },
+  {
+    title: 'AI is giving bad advice to flatter its users',
+    source: 'AP News',
+    date: 'Mar 26, 2026',
+    href: 'https://apnews.com/article/ai-sycophancy-chatbots-science-study-8dc61e69278b661cab1e53d38b4173b6',
+    summary: 'A new study finds chatbots can over-affirm users, including around harmful choices.',
+  },
+  {
+    title: 'Experts warn over rising use of AI for mental health support',
+    source: 'The Guardian',
+    date: 'Aug 30, 2025',
+    href: 'https://www.theguardian.com/society/2025/aug/30/therapists-warn-ai-chatbots-mental-health-support',
+    summary: 'Clinicians report concerns about dependence, self-diagnosis, and amplified distress.',
+  },
+  {
+    title: 'Chatbots unsafe for teen mental health support',
+    source: 'Axios',
+    date: 'Nov 20, 2025',
+    href: 'https://www.axios.com/2025/11/20/teen-mental-health-common-sense-media-chatbots',
+    summary: 'Reporting on a Common Sense Media and Stanford review of major AI assistants.',
+  },
+];
+
+function severityLabel(val: number | null): string {
+  if (val == null) return '';
+  if (val <= 1.5) return 'sev-1';
+  if (val <= 2.5) return 'sev-2';
+  if (val <= 3.5) return 'sev-3';
+  if (val <= 4.5) return 'sev-4';
+  return 'sev-5';
+}
+
+const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ?? {}))).size;
 ---
 
-<Layout title="Vigil" description="Vigil is currently being updated.">
-  <section class="holding-page">
-    <h1>Vigil</h1>
-    <p>We are updating this page.</p>
+<Layout title="Vigil — AI Safety Leaderboard" description="Evaluating how AI assistants respond to mentally vulnerable users. Vigil evaluates and ranks them.">
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <h1 class="hero-title">
+      <span>The public leaderboard for</span>
+      <span>AI mental health safety.</span>
+    </h1>
+    <p class="hero-subtitle">
+      Vigil simulates conversations with vulnerable users to evaluate how AI assistants respond.
+    </p>
+    <div class="hero-meta" aria-label="Vigil evaluation statistics">
+      <div class="hero-metric">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 11.5c1.7 0 3-1.4 3-3s-1.3-3-3-3-3 1.4-3 3 1.3 3 3 3Z" />
+          <path d="M6.5 12c1.5 0 2.7-1.2 2.7-2.7S8 6.6 6.5 6.6 3.8 7.8 3.8 9.3 5 12 6.5 12Z" />
+          <path d="M11.2 19v-1.5c0-2.1 2.1-3.7 4.8-3.7s4.8 1.6 4.8 3.7V19" />
+          <path d="M2.5 18.8v-1.3c0-1.8 1.7-3.2 4-3.2 1.1 0 2 .3 2.7.8" />
+        </svg>
+        <span>Models evaluated</span>
+        <strong>{bestRuns.length}</strong>
+      </div>
+      <span class="hero-meta-dot" aria-hidden="true">·</span>
+      <div class="hero-metric">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5.5h14v10H8.8L5 19.2V5.5Z" />
+          <path d="M8.2 9h7.6M8.2 12h5" />
+        </svg>
+        <span>Scenarios</span>
+        <strong>{totalScenarios.toLocaleString('en-US')}</strong>
+      </div>
+      <span class="hero-meta-dot" aria-hidden="true">·</span>
+      <div class="hero-metric">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 8h10M7 12h6" />
+          <path d="M4.5 5.5h15v10h-8L7.2 19v-3.5H4.5v-10Z" />
+        </svg>
+        <span>Conversation turns</span>
+        <strong>{totalConversationTurns.toLocaleString('en-US')}</strong>
+      </div>
+      <div class="hero-updated">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 4v3M18 4v3M4.5 9h15M6 6h12c.8 0 1.5.7 1.5 1.5v11c0 .8-.7 1.5-1.5 1.5H6c-.8 0-1.5-.7-1.5-1.5v-11C4.5 6.7 5.2 6 6 6Z" />
+        </svg>
+        <span>Updated</span>
+        <strong>{latestDate}</strong>
+      </div>
+    </div>
   </section>
+
+  <!-- ===== Leaderboard ===== -->
+  <section class="leaderboard-section">
+    <div class="leaderboard-wrap">
+      <table class="leaderboard" id="leaderboard">
+        <thead>
+          <tr>
+            <th class="col-rank">#</th>
+            <th class="col-model">Model</th>
+            <th class="col-overall sortable" data-col="overall">Overall</th>
+            <th class="col-profile">Profile</th>
+            <th class="col-more" aria-label="Open model"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {bestRuns.map((model: any, i: number) => (
+            <tr class="leaderboard-row" data-model-slug={cleanModelSlug(model)}>
+              <td class="col-rank rank-num">{i + 1}</td>
+              <td class="col-model">
+                <a href={`/model/${cleanModelSlug(model)}`} class="model-link">
+                  <span class="model-name">{displayName(model.target_model)}</span>
+                </a>
+              </td>
+              <td class={`col-overall score-cell overall-score ${severityLabel(model.overall_weighted_mean)}`}>
+                {model.overall_weighted_mean?.toFixed(2) ?? '—'}
+              </td>
+              <td class="col-profile profile-cell">
+                <span class="profile-text">{modelProfile(model)}</span>
+              </td>
+              <td class="col-more">
+                <a href={`/model/${cleanModelSlug(model)}`} class="row-chevron" aria-label={`View ${displayName(model.target_model)} model card`}>
+                  <span aria-hidden="true">></span>
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="leaderboard-footnote">
+      Click a model to view deeper evaluation details.
+    </p>
+  </section>
+
+  <!-- ===== Dimension Explainer ===== -->
+  <section class="dims-section">
+    <h2 class="section-label">What we measure</h2>
+    <div class="dims-grid">
+      {dimensions.map((d: string) => (
+        <div class="dim-card">
+          <h3 class="dim-name">{d}</h3>
+          <p class="dim-desc">{dimDescriptions[d]}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ===== About / Why It Matters ===== -->
+  <section class="about-section">
+    <div class="about-content">
+      <h2 class="section-label">Why Vigil exists</h2>
+      <div class="about-text">
+        <p>
+          Millions of people turn to AI assistants during their most vulnerable moments &mdash;
+          seeking help with anxiety, depression, eating disorders, suicidal thoughts, and more.
+          These conversations carry real stakes: a careless response can reinforce harmful behaviour,
+          dismiss genuine distress, or erode the trust someone needs to seek real help.
+        </p>
+        <p>
+          Yet there is no standard way to evaluate how well AI models handle these interactions.
+          Vigil fills that gap. Inspired by Anthropic&rsquo;s
+          <a href="https://alignment.anthropic.com/2025/bloom-auto-evals/" target="_blank" rel="noopener">Bloom</a>
+          framework, Vigil is a fully automated evaluation system that generates realistic
+          multi-turn conversations across diverse vulnerability states, then judges how well
+          models respond &mdash; using the standard of a skilled psychiatrist as the baseline.
+        </p>
+        <p>
+          The goal is not to replace clinical expertise but to ensure AI assistants meet a
+          minimum standard of care &mdash; and to give the public transparent data about which
+          models do.
+        </p>
+      </div>
+    </div>
+
+    <aside class="about-aside">
+      <div class="pipeline-card">
+        <h3 class="pipeline-title">The pipeline</h3>
+        <ol class="pipeline-steps">
+          <li><strong>Understanding</strong> &mdash; analyse the vulnerable user state</li>
+          <li><strong>Ideation</strong> &mdash; generate diverse test scenarios</li>
+          <li><strong>Rollout</strong> &mdash; multi-turn conversations with the target AI</li>
+          <li><strong>Judgement</strong> &mdash; evidence-based scoring across 5 dimensions</li>
+          <li><strong>Profiling</strong> &mdash; characterises each model's personality, response style, and behavioural tendencies</li>
+        </ol>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ===== News / Press ===== -->
+  <section class="news-section" id="coverage">
+    <div class="news-head">
+      <div>
+        <h2 class="section-label">In the news</h2>
+        <p>Coverage and reporting on AI systems interacting with vulnerable users.</p>
+      </div>
+      <a href="https://news.google.com/search?q=AI%20chatbots%20mental%20health%20safety" target="_blank" rel="noopener">View all coverage -></a>
+    </div>
+    <div class="coverage-grid">
+      {coverageItems.map((item) => (
+        <a class="coverage-item" href={item.href} target="_blank" rel="noopener">
+          <h3>{item.title}</h3>
+          <p class="coverage-meta">{item.source} <span>·</span> {item.date}</p>
+          <p>{item.summary}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
 </Layout>
 
 <style>
-  .holding-page {
-    min-height: 52vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 680px;
-    padding: clamp(3rem, 10vw, 7rem) 0;
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
   }
 
-  .holding-page h1 {
-    font-family: var(--font-mono);
-    font-size: clamp(2rem, 6vw, 4rem);
+  .hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 6vw, 4rem);
     font-weight: 400;
-    letter-spacing: 0;
-    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0.2rem 0 0.5rem;
     color: var(--ink);
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto 0.75rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .hero-note {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ===== Leaderboard ===== */
+  .leaderboard-section {
+    margin: 1rem 0 4rem;
+  }
+
+  .leaderboard-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 6px 24px rgba(44, 36, 24, 0.03);
+  }
+
+  .leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .leaderboard thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .leaderboard th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    background: var(--cream-warm);
+    padding: 0.75rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--parchment);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .leaderboard th.sortable { cursor: pointer; }
+  .leaderboard th.sortable:hover { color: var(--ink); }
+  .leaderboard th.sort-asc::after { content: " \u25B2"; font-size: 0.55rem; }
+  .leaderboard th.sort-desc::after { content: " \u25BC"; font-size: 0.55rem; }
+
+  .leaderboard td {
+    padding: 0.9rem 0.8rem;
+    border-bottom: 1px solid rgba(236, 228, 216, 0.6);
+    vertical-align: top;
+  }
+
+  .leaderboard-row {
+    transition: background 0.12s ease;
+  }
+
+  .leaderboard-row:hover {
+    background: rgba(107, 124, 94, 0.03);
+  }
+
+  .leaderboard-row:last-child td {
+    border-bottom: none;
+  }
+
+  .col-rank { width: 2.5rem; text-align: center; }
+  .col-model { width: 34%; }
+  .col-overall { text-align: center; }
+  .col-dim { text-align: center; }
+  .col-profile { width: 45%; }
+  .col-meta { text-align: center; }
+
+  .rank-num {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .model-link {
+    display: block;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .model-link:hover .model-name {
+    color: var(--sage);
+  }
+
+  .model-name {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: block;
+    transition: color 0.15s;
+  }
+
+  /* Score severity colors */
+  .score-cell {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .overall-score {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .profile-cell {
+    color: var(--ink-soft);
+  }
+
+  .profile-text {
+    display: inline-block;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.35;
+    color: var(--ink-soft);
+  }
+
+  .sev-1 { color: var(--green-good); }
+  .sev-2 { color: var(--sage); }
+  .sev-3 { color: var(--yellow-mid); }
+  .sev-4 { color: var(--orange-warn); }
+  .sev-5 { color: var(--red-bad); }
+
+  .meta-cell {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  .leaderboard-footnote .mono {
+    background: var(--cream-warm);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  /* ===== Dimensions ===== */
+  .dims-section {
+    margin: 0 0 4rem;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--parchment);
+  }
+
+  .dims-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .dim-card {
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--parchment);
+    border-radius: 6px;
+    background: white;
+    transition: border-color 0.15s;
+  }
+
+  .dim-card:hover {
+    border-color: var(--ink-faint);
+  }
+
+  .dim-name {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .dim-desc {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ===== About ===== */
+  .about-section {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 3rem;
+    margin: 0 0 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
     margin-bottom: 1rem;
   }
 
-  .holding-page p {
+  .read-more {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--sage);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  .read-more:hover { color: var(--ink); }
+
+  .pipeline-card {
+    background: var(--cream-warm);
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .pipeline-title {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    margin-bottom: 1rem;
+  }
+
+  .pipeline-steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+  }
+
+  .pipeline-steps li {
+    counter-increment: step;
     font-family: var(--font-serif);
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    font-size: 0.9rem;
     color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(236, 228, 216, 0.6);
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .pipeline-steps li:last-child { border-bottom: none; }
+
+  .pipeline-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--sage);
+    font-weight: 500;
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 1px solid var(--sage-pale);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0.55rem;
+  }
+
+  .pipeline-steps li strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ===== Press ===== */
+  .press-section {
+    margin: 0 0 2rem;
+  }
+
+  .press-placeholder {
+    background: var(--cream-warm);
+    border: 1px dashed var(--parchment);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .press-note {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .about-section {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .leaderboard {
+      font-size: 0.8rem;
+    }
+
+    .leaderboard th, .leaderboard td {
+      padding: 0.6rem 0.5rem;
+    }
+
+    .model-qual {
+      max-width: 200px;
+      font-size: 0.72rem;
+    }
+
+    .dims-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 2.2rem; }
+    .dims-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Reference-inspired landing treatment ===== */
+  .hero {
+    text-align: left;
+    padding: clamp(2rem, 5vw, 3.6rem) 0 2rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-mono);
+    max-width: 840px;
+    font-size: clamp(2.35rem, 5.2vw, 4.05rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.16;
+    margin: 0 0 1.05rem;
+    color: var(--ink);
+  }
+
+  .hero-title span {
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    color: var(--ink-soft);
+    max-width: none;
+    margin: 0 0 2rem;
+    font-style: normal;
+    line-height: 1.65;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 820px) {
+    .hero-subtitle {
+      white-space: normal;
+    }
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-card {
+    min-height: 116px;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--parchment);
+    border-radius: 8px;
+    background: rgba(255, 253, 249, 0.58);
+    box-shadow: 0 1px 2px rgba(21, 19, 16, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .stat-card strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+    line-height: 1;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .stat-card .stat-date {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .leaderboard-section {
+    margin: 1rem 0 2rem;
+  }
+
+  .leaderboard-wrap,
+  .dim-card,
+  .pipeline-card,
+  .press-placeholder {
+    background: rgba(255, 253, 249, 0.58);
+  }
+
+  .leaderboard-wrap {
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 12px 34px rgba(44, 36, 24, 0.035);
+  }
+
+  .leaderboard-heading {
+    min-width: 760px;
+    padding: 1rem 1.35rem;
+    border-bottom: 1px solid var(--parchment);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .leaderboard-heading h2 {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .leaderboard-heading a {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    color: var(--sage);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .leaderboard {
+    min-width: 760px;
+  }
+
+  .leaderboard th {
+    background: rgba(247, 241, 232, 0.55);
+    padding: 0.78rem 1.35rem;
+  }
+
+  .leaderboard th small {
+    display: block;
+    margin-top: 0.12rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard td {
+    padding: 0.82rem 1.35rem;
+    vertical-align: middle;
+  }
+
+  .col-rank { width: 3rem; }
+
+  .col-more {
+    width: 3rem;
+    text-align: center;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  .model-name {
+    font-size: 0.91rem;
+  }
+
+  .profile-text {
+    font-size: 0.98rem;
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    text-align: left;
+    margin: 0;
+    padding: 0.95rem 1.35rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.6);
+  }
+
+  .section-label {
+    border-bottom: 0;
+  }
+
+  .dims-section,
+  .about-section,
+  .press-section {
+    margin-bottom: 2rem;
+  }
+
+  .dims-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .dim-card {
+    padding: 1.2rem 1.25rem;
+  }
+
+  .dim-desc {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    .stat-grid,
+    .dims-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero {
+      padding-top: 1.8rem;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .stat-grid,
+    .dims-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+      min-height: 94px;
+    }
+  }
+
+  /* Restore the original leaderboard treatment. */
+  .leaderboard-wrap {
+    background: white;
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 6px 24px rgba(44, 36, 24, 0.03);
+  }
+
+  .leaderboard {
+    min-width: 0;
+  }
+
+  .leaderboard th {
+    background: var(--cream-warm);
+    padding: 0.75rem 0.8rem;
+  }
+
+  .leaderboard td {
+    padding: 0.9rem 0.8rem;
+    vertical-align: top;
+  }
+
+  .col-rank {
+    width: 2.5rem;
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0;
+    border-top: 0;
+    line-height: 1.6;
+  }
+
+  /* Keep the hero headline to the intended two-line lockup. */
+  .hero-title {
+    max-width: none;
+    font-size: clamp(1.55rem, 4.6vw, 4.05rem);
+  }
+
+  .hero-title span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 600px) {
+    .hero-title {
+      font-size: clamp(1.28rem, 5.8vw, 1.8rem);
+    }
+  }
+
+  @media (min-width: 901px) {
+    .stat-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: 780px;
+    }
+  }
+
+  /* ===== Final reference alignment ===== */
+  .hero {
+    padding: clamp(2rem, 4.4vw, 3.25rem) 0 2.35rem;
+  }
+
+  .hero-subtitle {
+    margin-bottom: 1.45rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.65rem, 1.7vw, 1.35rem);
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+  }
+
+  .hero-metric,
+  .hero-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .hero-updated {
+    margin-left: auto;
+  }
+
+  .hero-metric svg,
+  .hero-updated svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--sage);
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hero-metric strong,
+  .hero-updated strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .hero-meta-dot {
+    color: var(--ink-faint);
+  }
+
+  .leaderboard-section {
+    margin: 0.6rem 0 2rem;
+  }
+
+  .leaderboard-wrap {
+    overflow-x: auto;
+    background: rgba(255, 253, 249, 0.58);
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 10px 30px rgba(44, 36, 24, 0.035);
+  }
+
+  .leaderboard-heading {
+    min-width: 760px;
+    padding: 1rem 1.35rem;
+    border-bottom: 1px solid var(--parchment);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 253, 249, 0.35);
+  }
+
+  .leaderboard-heading h2 {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .leaderboard-heading h2 span {
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+
+  .leaderboard-heading a {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    color: var(--sage);
+    text-decoration: none;
+  }
+
+  .leaderboard-heading a:hover {
+    color: var(--ink);
+  }
+
+  .leaderboard {
+    min-width: 760px;
+  }
+
+  .leaderboard th {
+    background: rgba(247, 241, 232, 0.55);
+    padding: 0.78rem 1.35rem;
+    color: var(--ink);
+  }
+
+  .leaderboard th small {
+    display: block;
+    margin-top: 0.12rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard td {
+    padding: 0.82rem 1.35rem;
+    vertical-align: middle;
+  }
+
+  .col-rank {
+    width: 3rem;
+  }
+
+  .col-more {
+    width: 3rem;
+    text-align: center;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    text-align: left;
+    margin: 0;
+    padding: 0.95rem 1.35rem;
+    border-top: 1px solid rgba(236, 228, 216, 0.6);
+    line-height: 1.6;
+  }
+
+  .leaderboard-footnote a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .news-section {
+    margin: 0 0 2.2rem;
+  }
+
+  .news-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .news-head .section-label {
+    margin-bottom: 0.25rem;
+    padding-bottom: 0;
+  }
+
+  .news-head p {
+    font-family: var(--font-serif);
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+
+  .news-head > a {
+    flex: 0 0 auto;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--sage);
+  }
+
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .coverage-item {
+    display: block;
+    min-height: 158px;
+    padding: 0 1.6rem 0 1.8rem;
+    color: var(--ink);
+    border-left: 1px solid var(--parchment);
+  }
+
+  .coverage-item:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .coverage-item h3 {
+    max-width: 19ch;
+    margin: 0 0 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  .coverage-meta {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+  }
+
+  .coverage-meta span {
+    margin: 0 0.4rem;
+    color: var(--ink-faint);
+  }
+
+  .coverage-item p:last-child {
+    font-family: var(--font-serif);
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .coverage-item:hover h3 {
+    color: var(--sage);
+  }
+
+  @media (max-width: 900px) {
+    .hero-meta {
+      flex-wrap: wrap;
+    }
+
+    .hero-updated {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .coverage-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 1.8rem;
+    }
+
+    .coverage-item:nth-child(odd) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-meta {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .hero-meta-dot {
+      display: none;
+    }
+
+    .news-head {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .coverage-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .coverage-item,
+    .coverage-item:first-child {
+      min-height: auto;
+      padding: 0 0 1.15rem;
+      border-left: 0;
+      border-bottom: 1px solid var(--parchment);
+    }
+  }
+
+  /* Preserve the original leaderboard visual style with only chevrons added. */
+  .leaderboard-section {
+    margin: 1rem 0 4rem;
+  }
+
+  .leaderboard-wrap {
+    background: white;
+    box-shadow: 0 1px 3px rgba(44, 36, 24, 0.04), 0 6px 24px rgba(44, 36, 24, 0.03);
+  }
+
+  .leaderboard {
+    min-width: 0;
+  }
+
+  .leaderboard th {
+    background: var(--cream-warm);
+    padding: 0.75rem 0.8rem;
+    color: var(--ink-muted);
+  }
+
+  .leaderboard th small {
+    display: none;
+  }
+
+  .leaderboard td {
+    padding: 0.9rem 0.8rem;
+    vertical-align: top;
+  }
+
+  .col-rank {
+    width: 2.5rem;
+  }
+
+  .col-more {
+    width: 2.75rem;
+    text-align: center;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  .row-chevron {
+    display: block;
+    color: var(--sage);
+    text-decoration: none;
+  }
+
+  .row-chevron:hover {
+    color: var(--ink);
+  }
+
+  .leaderboard-footnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0;
+    border-top: 0;
     line-height: 1.6;
   }
 </style>
+
+<script>
+  // Client-side sorting for the leaderboard
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.getElementById('leaderboard');
+    if (!table) return;
+
+    const headers = table.querySelectorAll('th.sortable');
+    let currentSort = 'overall';
+    let ascending = true;
+
+    headers.forEach(th => {
+      th.addEventListener('click', () => {
+        const col = (th as HTMLElement).dataset.col!;
+        if (currentSort === col) {
+          ascending = !ascending;
+        } else {
+          currentSort = col;
+          ascending = true;
+        }
+
+        const tbody = table.querySelector('tbody')!;
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        rows.sort((a, b) => {
+          const headerCells = Array.from((th.parentElement as HTMLTableRowElement).children);
+          const cellIndex = headerCells.indexOf(th);
+          const aCell = a.children[cellIndex] as HTMLElement;
+          const bCell = b.children[cellIndex] as HTMLElement;
+          const aVal = parseFloat(aCell.textContent || '999');
+          const bVal = parseFloat(bCell.textContent || '999');
+          return ascending ? aVal - bVal : bVal - aVal;
+        });
+
+        rows.forEach((row, i) => {
+          tbody.appendChild(row);
+          (row.children[0] as HTMLElement).textContent = String(i + 1);
+        });
+
+        // Update header indicators
+        headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+        th.classList.add(ascending ? 'sort-asc' : 'sort-desc');
+      });
+    });
+  });
+</script>

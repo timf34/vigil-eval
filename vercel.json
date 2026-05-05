@@ -1,11 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/blog",
-      "destination": "/",
-      "permanent": false
-    },
-    {
       "source": "/model/gpt-4o--benchmark-2026-04-07T21-12-39-rejudge-v4",
       "destination": "/model/gpt-4o/",
       "permanent": true
