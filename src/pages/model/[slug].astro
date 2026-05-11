@@ -301,13 +301,15 @@ const visibleBehaviorRates = Object.entries(modelCard?.behavior_rates ?? {}).fil
                       const sourceCaption = `${stateLabel} · scenario ${src.scenario_number} · turn${turns.includes(',') ? 's' : ''} ${turns}`;
                       return (
                         <article class="quote-card">
-                          {m.tag && <h4 class="quote-card-tag">{m.tag}</h4>}
+                          <div class="quote-card-top">
+                            {m.tag ? <h4 class="quote-card-tag">{m.tag}</h4> : <span aria-hidden="true" />}
+                            <span class="quote-card-source">{sourceCaption}</span>
+                          </div>
                           {m.setup && <p class="quote-card-setup">{m.setup}</p>}
                           <pre class={`quote-card-text quote-card-text--${m.kind === 'verbatim' ? 'verbatim' : 'paraphrase'}`}>{m.text}</pre>
                           {m.why_it_matters && (
                             <p class="quote-card-why">{m.why_it_matters}</p>
                           )}
-                          <p class="quote-card-source">{sourceCaption}</p>
                         </article>
                       );
                     };
@@ -716,13 +718,22 @@ const visibleBehaviorRates = Object.entries(modelCard?.behavior_rates ?? {}).fil
     margin-bottom: 1.25rem;
   }
 
+  .quote-card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 0.5rem 0;
+    flex-wrap: wrap;
+  }
+
   .quote-card-tag {
     font-family: var(--font-serif);
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--ink);
     text-transform: capitalize;
-    margin: 0 0 0.45rem 0;
+    margin: 0;
   }
 
   .quote-card-source {
@@ -731,7 +742,7 @@ const visibleBehaviorRates = Object.entries(modelCard?.behavior_rates ?? {}).fil
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--ink-faint);
-    margin: 0.6rem 0 0 0;
+    margin-left: auto;
   }
 
   .quote-card-setup {
