@@ -269,6 +269,76 @@ const visibleBehaviorRates = Object.entries(modelCard?.behavior_rates ?? {}).fil
     </div>
   </section>
 
+  <!-- ===== Quoted evidence ===== -->
+  {modelCard?.quotes && (
+    (modelCard.quotes.worst_moments?.length > 0 ||
+     modelCard.quotes.notable_moments?.length > 0 ||
+     modelCard.quotes.representative_moments?.length > 0) && (
+      <section class="quotes-section">
+        <h2 class="quotes-title">Selected moments</h2>
+        <p class="quotes-intro">First moment in each group is shown by default — expand to see the rest.</p>
+
+        {[
+          { key: 'worst_moments', label: 'What went wrong', tone: 'risky', moreLabel: 'more concerning moment', empty: 'No moments cross the egregious bar — a meaningful finding for a model that performs well.' },
+          { key: 'notable_moments', label: 'Worth noting', tone: 'neutral', moreLabel: 'more notable moment', empty: null },
+          { key: 'representative_moments', label: 'When it works well', tone: 'protective', moreLabel: 'more example', empty: null },
+        ].map(({ key, label, tone, moreLabel, empty }) => {
+          const moments = modelCard.quotes[key] || [];
+          if (moments.length === 0 && !empty) return null;
+          const [first, ...rest] = moments;
+          return (
+            <div class={`quote-group quote-group--${tone}`}>
+              <h3 class={`quote-group-heading quote-group-heading--${tone}`}>{label}</h3>
+              {moments.length === 0 ? (
+                <p class="quote-empty">{empty}</p>
+              ) : (
+                <>
+                  {(() => {
+                    const renderCard = (m: any, i: number) => {
+                      const src = m.source || {};
+                      const turns = (src.turns || []).join(', ');
+                      const stateLabel = (src.state || '').replace(/_/g, ' ');
+                      const sourceCaption = `${stateLabel} · scenario ${src.scenario_number} · turn${turns.includes(',') ? 's' : ''} ${turns}`;
+                      return (
+                        <article class="quote-card">
+                          {m.tag && <h4 class="quote-card-tag">{m.tag}</h4>}
+                          {m.setup && <p class="quote-card-setup">{m.setup}</p>}
+                          <pre class={`quote-card-text quote-card-text--${m.kind === 'verbatim' ? 'verbatim' : 'paraphrase'}`}>{m.text}</pre>
+                          {m.why_it_matters && (
+                            <p class="quote-card-why">{m.why_it_matters}</p>
+                          )}
+                          <p class="quote-card-source">{sourceCaption}</p>
+                        </article>
+                      );
+                    };
+                    return (
+                      <>
+                        {renderCard(first, 0)}
+                        {rest.length > 0 && (
+                          <details class="quote-more">
+                            <summary>
+                              <span class="quote-more-label">
+                                Show {rest.length} {moreLabel}{rest.length === 1 ? '' : 's'}
+                              </span>
+                              <span class="quote-more-icon" aria-hidden="true">+</span>
+                            </summary>
+                            <div class="quote-more-list">
+                              {rest.map((m: any, i: number) => renderCard(m, i + 1))}
+                            </div>
+                          </details>
+                        )}
+                      </>
+                    );
+                  })()}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </section>
+    )
+  )}
+
   <!-- Per-state breakdown -->
   <section class="states-section">
     <h2 class="section-label">Performance by vulnerability state</h2>
@@ -591,6 +661,163 @@ const visibleBehaviorRates = Object.entries(modelCard?.behavior_rates ?? {}).fil
   .pattern-item.protective::before { background: var(--sage); }
   .pattern-item.risky { color: var(--orange-warn); }
   .pattern-item.risky::before { background: var(--orange-warn); }
+
+  /* ===== Quoted evidence ===== */
+  .quotes-section {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--parchment);
+  }
+
+  .quotes-title {
+    font-family: var(--font-serif);
+    font-size: 1.65rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 0.4rem 0;
+    letter-spacing: -0.01em;
+  }
+
+  .quotes-intro {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    margin: 0 0 1.75rem 0;
+  }
+
+  .quote-group {
+    margin-bottom: 2.25rem;
+  }
+
+  .quote-group-heading {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--parchment);
+  }
+
+  .quote-group-heading--risky { color: var(--orange-warn); border-bottom-color: var(--amber-pale); }
+  .quote-group-heading--protective { color: var(--sage); border-bottom-color: var(--sage-pale); }
+
+  .quote-empty {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .quote-card {
+    margin-bottom: 1.25rem;
+  }
+
+  .quote-card-tag {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink);
+    text-transform: capitalize;
+    margin: 0 0 0.45rem 0;
+  }
+
+  .quote-card-source {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0.6rem 0 0 0;
+  }
+
+  .quote-card-setup {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 0.85rem 0;
+  }
+
+  .quote-card-text {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--cream-warm);
+    padding: 0.9rem 1.1rem;
+    border-radius: 4px;
+    margin: 0 0 0.85rem 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+  }
+
+  .quote-card-text--paraphrase {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.92rem;
+  }
+
+  .quote-card-why {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* --- Collapsible "show more" --- */
+  .quote-more {
+    margin-top: 0.5rem;
+  }
+
+  .quote-more > summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--parchment);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .quote-more > summary::-webkit-details-marker { display: none; }
+
+  .quote-more > summary:hover {
+    color: var(--ink);
+    border-color: var(--ink-faint);
+    background: var(--cream-warm);
+  }
+
+  .quote-more-icon {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+  }
+
+  .quote-more[open] > summary > .quote-more-icon {
+    transform: rotate(45deg);
+  }
+
+  .quote-more-list {
+    margin-top: 1.25rem;
+    padding-top: 0.25rem;
+    border-top: 1px dashed var(--parchment);
+    padding-top: 1.25rem;
+  }
 
   .rates-list {
     display: grid;

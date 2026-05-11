@@ -451,6 +451,7 @@ def build_model_card_entry(
     card = hydrate_model_card(card or {})
     model_dir = run_dir / sanitize_model_name(model_name)
     has_tag_rates = has_stage4_characterization(model_dir, states)
+    quotes_data = load_json(model_dir / "model_quotes.json")
 
     return {
         "slug": slug,
@@ -478,6 +479,17 @@ def build_model_card_entry(
         "recurring_risky_patterns": card.get("recurring_risky_patterns") or [],
         "warning_labels": card.get("warning_labels") or [],
         "state_dossiers": state_dossiers,
+        "quotes": (
+            {
+                "prompt_version": quotes_data.get("prompt_version"),
+                "scenarios_per_state": quotes_data.get("scenarios_per_state"),
+                "worst_moments": quotes_data.get("worst_moments") or [],
+                "notable_moments": quotes_data.get("notable_moments") or [],
+                "representative_moments": quotes_data.get("representative_moments") or [],
+            }
+            if quotes_data
+            else None
+        ),
     }
 
 
