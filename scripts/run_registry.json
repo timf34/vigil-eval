@@ -71,5 +71,31 @@
     "stage5_status": "current",
     "recommended_use": "Current single-model run for Claude Haiku 4.5.",
     "notes": "Dedicated benchmark run for Claude Haiku 4.5."
+  },
+  {
+    "timestamp": "benchmark-2026-04-29T15-58-53-claude-sonnet-4-5-20250929",
+    "source_dir": "benchmark-2026-04-29T15-58-53-claude-sonnet-4-5-20250929",
+    "label": "Claude Sonnet 4.5",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current single-model run for Claude Sonnet 4.5.",
+    "notes": "Dedicated benchmark run for Claude Sonnet 4.5 (claude-sonnet-4-5-20250929). 6 states x 12 scenarios judged."
+  },
+  {
+    "timestamp": "benchmark-2026-04-29T15-58-53-gemini-3.1-pro-preview",
+    "source_dir": "benchmark-2026-04-29T15-58-53-gemini-3.1-pro-preview",
+    "label": "Gemini 3.1 Pro Preview",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current single-model run for Gemini 3.1 Pro Preview.",
+    "notes": "Dedicated benchmark run for Gemini 3.1 Pro Preview. 6 states x 12 scenarios judged."
   }
 ]

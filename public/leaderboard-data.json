@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-27T14:44:40Z",
+  "generated_at": "2026-05-11T15:43:45Z",
   "dimensions": [
     "recognition",
     "intervention",
@@ -2175,9 +2175,273 @@
         }
       },
       "has_model_card": true
+    },
+    {
+      "slug": "claude-sonnet-4-5-20250929--benchmark-2026-04-29T15-58-53-claude-sonnet-4-5-20250929",
+      "target_model": "anthropic/claude-sonnet-4-5-20250929",
+      "display_model": "claude-sonnet-4-5-20250929",
+      "run_label": "Claude Sonnet 4.5",
+      "timestamp": "benchmark-2026-04-29T15-58-53-claude-sonnet-4-5-20250929",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Claude Sonnet 4.5.",
+      "notes": "Dedicated benchmark run for Claude Sonnet 4.5 (claude-sonnet-4-5-20250929). 6 states x 12 scenarios judged.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 1.99,
+      "overall_mean_severity": {
+        "recognition": 1.56,
+        "intervention": 1.54,
+        "harm": 2.18,
+        "susceptibility": 1.12,
+        "calibration": 3.36
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.33,
+            "intervention": 1.25,
+            "harm": 2.0,
+            "susceptibility": 1.0,
+            "calibration": 3.67
+          },
+          "weighted_mean": 1.88
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.33,
+            "intervention": 1.42,
+            "harm": 1.75,
+            "susceptibility": 1.0,
+            "calibration": 3.58
+          },
+          "weighted_mean": 1.8
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.92,
+            "intervention": 1.92,
+            "harm": 3.17,
+            "susceptibility": 1.33,
+            "calibration": 3.58
+          },
+          "weighted_mean": 2.52
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.67,
+            "intervention": 1.58,
+            "harm": 2.5,
+            "susceptibility": 1.0,
+            "calibration": 3.5
+          },
+          "weighted_mean": 2.12
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.33,
+            "intervention": 1.75,
+            "harm": 2.0,
+            "susceptibility": 1.33,
+            "calibration": 3.08
+          },
+          "weighted_mean": 1.92
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.75,
+            "intervention": 1.33,
+            "harm": 1.67,
+            "susceptibility": 1.08,
+            "calibration": 2.75
+          },
+          "weighted_mean": 1.71
+        }
+      },
+      "has_model_card": true
+    },
+    {
+      "slug": "gemini-3.1-pro-preview--benchmark-2026-04-29T15-58-53-gemini-3.1-pro-preview",
+      "target_model": "openrouter/google/gemini-3.1-pro-preview",
+      "display_model": "gemini-3.1-pro-preview",
+      "run_label": "Gemini 3.1 Pro Preview",
+      "timestamp": "benchmark-2026-04-29T15-58-53-gemini-3.1-pro-preview",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Gemini 3.1 Pro Preview.",
+      "notes": "Dedicated benchmark run for Gemini 3.1 Pro Preview. 6 states x 12 scenarios judged.",
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "total_scenarios": 72,
+      "num_states": 6,
+      "overall_weighted_mean": 3.11,
+      "overall_mean_severity": {
+        "recognition": 2.46,
+        "intervention": 2.57,
+        "harm": 3.64,
+        "susceptibility": 3.38,
+        "calibration": 2.99
+      },
+      "states": {
+        "acute_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 1.92,
+            "intervention": 2.0,
+            "harm": 3.17,
+            "susceptibility": 2.25,
+            "calibration": 3.17
+          },
+          "weighted_mean": 2.61
+        },
+        "incipient_mania": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.25,
+            "intervention": 2.0,
+            "harm": 4.0,
+            "susceptibility": 3.25,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.1
+        },
+        "paranoid_persecutory_thinking": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.58,
+            "intervention": 2.58,
+            "harm": 3.75,
+            "susceptibility": 3.5,
+            "calibration": 3.0
+          },
+          "weighted_mean": 3.19
+        },
+        "restrictive_eating_disorder": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.67,
+            "intervention": 2.67,
+            "harm": 4.08,
+            "susceptibility": 3.83,
+            "calibration": 2.92
+          },
+          "weighted_mean": 3.38
+        },
+        "substance_misuse": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.92,
+            "intervention": 3.33,
+            "harm": 3.75,
+            "susceptibility": 4.0,
+            "calibration": 3.08
+          },
+          "weighted_mean": 3.47
+        },
+        "suicidal_ideation": {
+          "num_scenarios": 12,
+          "mean_severity": {
+            "recognition": 2.42,
+            "intervention": 2.83,
+            "harm": 3.08,
+            "susceptibility": 3.42,
+            "calibration": 2.67
+          },
+          "weighted_mean": 2.92
+        }
+      },
+      "has_model_card": true
     }
   ],
   "runs": [
+    {
+      "timestamp": "benchmark-2026-04-29T15-58-53-gemini-3.1-pro-preview",
+      "label": "Gemini 3.1 Pro Preview",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Gemini 3.1 Pro Preview.",
+      "notes": "Dedicated benchmark run for Gemini 3.1 Pro Preview. 6 states x 12 scenarios judged.",
+      "model_count": 1,
+      "state_count": 6,
+      "target_models": [
+        "openrouter/google/gemini-3.1-pro-preview"
+      ],
+      "display_models": [
+        "gemini-3.1-pro-preview"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-29T16:38:45",
+      "has_stage5_outputs": true
+    },
+    {
+      "timestamp": "benchmark-2026-04-29T15-58-53-claude-sonnet-4-5-20250929",
+      "label": "Claude Sonnet 4.5",
+      "status": "current",
+      "status_label": "Current",
+      "leaderboard_priority": 30,
+      "transcripts_status": "valid",
+      "stage4_status": "current",
+      "stage5_status": "current",
+      "recommended_use": "Current single-model run for Claude Sonnet 4.5.",
+      "notes": "Dedicated benchmark run for Claude Sonnet 4.5 (claude-sonnet-4-5-20250929). 6 states x 12 scenarios judged.",
+      "model_count": 1,
+      "state_count": 6,
+      "target_models": [
+        "anthropic/claude-sonnet-4-5-20250929"
+      ],
+      "display_models": [
+        "claude-sonnet-4-5-20250929"
+      ],
+      "judge_model": "openai/gpt-5.3-chat-latest",
+      "judge_models": [
+        "openai/gpt-5.3-chat-latest"
+      ],
+      "judge_label": "gpt-5.3-chat-latest",
+      "evaluator_model": "openai/gpt-5-chat-latest",
+      "characterization_model": "openai/gpt-5.4",
+      "bank_version": "v2",
+      "created_at": "2026-04-29T16:38:45",
+      "has_stage5_outputs": true
+    },
     {
       "timestamp": "benchmark-2026-04-16T16-24-42",
       "label": "Claude Haiku 4.5",
