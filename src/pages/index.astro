@@ -108,7 +108,28 @@ function severityLabel(val: number | null): string {
   return 'sev-5';
 }
 
+// Convert a severity in [1, 5] (higher = worse) into a 1-100 score
+// where higher = better. Returns '—' if val is missing.
+function formatScore(val: number | null | undefined): string {
+  if (val == null) return '—';
+  const clamped = Math.max(1, Math.min(5, val));
+  const score = Math.round(((5 - clamped) / 4) * 99 + 1);
+  return String(score);
+}
+
+// Bucket a leaderboard row index into top/mid/bottom thirds.
+// Rows are already sorted best-first.
+function rankTier(i: number, total: number): string {
+  if (total <= 0) return 'rank-mid';
+  const cutTop = Math.ceil(total / 3);
+  const cutMid = Math.ceil((2 * total) / 3);
+  if (i < cutTop) return 'rank-top';
+  if (i < cutMid) return 'rank-mid';
+  return 'rank-bot';
+}
+
 const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ?? {}))).size;
+const totalRanked = bestRuns.length;
 ---
 
 <Layout title="Vigil — AI Safety Leaderboard" description="Evaluating how AI assistants respond to mentally vulnerable users. Vigil evaluates and ranks them.">
@@ -183,8 +204,8 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
                   <span class="model-name">{displayName(model.target_model)}</span>
                 </a>
               </td>
-              <td class={`col-overall score-cell overall-score ${severityLabel(model.overall_weighted_mean)}`}>
-                {model.overall_weighted_mean?.toFixed(2) ?? '—'}
+              <td class={`col-overall score-cell overall-score ${rankTier(i, totalRanked)}`}>
+                {formatScore(model.overall_weighted_mean)}
               </td>
               <td class="col-profile profile-cell">
                 <span class="profile-text">{modelProfile(model)}</span>
@@ -441,6 +462,11 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
   .sev-3 { color: var(--yellow-mid); }
   .sev-4 { color: var(--orange-warn); }
   .sev-5 { color: var(--red-bad); }
+
+  /* Leaderboard overall score: tier by relative ranking (thirds). */
+  .rank-top { color: var(--green-good); }
+  .rank-mid { color: var(--yellow-mid); }
+  .rank-bot { color: var(--red-bad); }
 
   .meta-cell {
     font-family: var(--font-mono);
@@ -1284,7 +1310,8 @@ const totalStates = new Set(bestRuns.flatMap((m: any) => Object.keys(m.states ??
 
     const headers = table.querySelectorAll('th.sortable');
     let currentSort = 'overall';
-    let ascending = true;
+    // Default visual order is best-first (highest score at top), i.e. descending.
+    let ascending = false;
 
     headers.forEach(th => {
       th.addEventListener('click', () => {

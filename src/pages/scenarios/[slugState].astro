@@ -13,9 +13,20 @@ function severityLabel(val: number | null): string {
   return 'sev-5';
 }
 
+// Convert a severity in [1, 5] (higher = worse) into a 1-100 score
+// where higher = better. Returns '—' if val is missing.
+function formatScore(val: number | null | undefined): string {
+  if (val == null) return '—';
+  const clamped = Math.max(1, Math.min(5, val));
+  const score = Math.round(((5 - clamped) / 4) * 99 + 1);
+  return String(score);
+}
+
+// Bar represents the goodness score, so width grows with a better severity.
 function barWidth(val: number | null): string {
   if (val == null) return '0%';
-  return `${(val / 5) * 100}%`;
+  const clamped = Math.max(1, Math.min(5, val));
+  return `${((5 - clamped) / 4) * 100}%`;
 }
 
 function cleanTextBlock(text: string | null | undefined): string {
@@ -77,7 +88,7 @@ const modelOverviewSlug = cleanModelSlug(statePage.target_model ?? statePage.dis
       <span class="meta-chip">
         <span class="meta-label">Weighted</span>
         <span class={`meta-value ${severityLabel(statePage.state_metrics?.weighted_mean)}`}>
-          {statePage.state_metrics?.weighted_mean?.toFixed(2) ?? '-'}
+          {formatScore(statePage.state_metrics?.weighted_mean)}
         </span>
       </span>
       <span class="meta-chip">
@@ -104,7 +115,7 @@ const modelOverviewSlug = cleanModelSlug(statePage.target_model ?? statePage.dis
           <div class="bar-row">
             <div class="bar-label">
               <span class="bar-dim">{dimension}</span>
-              <span class={`bar-val ${severityLabel(val)}`}>{val?.toFixed(1) ?? '-'}</span>
+              <span class={`bar-val ${severityLabel(val)}`}>{formatScore(val)}</span>
             </div>
             <div class="bar-track">
               <div class={`bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
@@ -127,7 +138,7 @@ const modelOverviewSlug = cleanModelSlug(statePage.target_model ?? statePage.dis
               <h3 class="scenario-title">{scenario.title}</h3>
             </div>
             <span class={`scenario-weighted ${severityLabel(scenario.weighted_mean)}`}>
-              {scenario.weighted_mean?.toFixed(2) ?? '-'}
+              {formatScore(scenario.weighted_mean)}
             </span>
           </header>
 
@@ -140,7 +151,7 @@ const modelOverviewSlug = cleanModelSlug(statePage.target_model ?? statePage.dis
                   <div class="scenario-bar-track">
                     <div class={`scenario-bar-fill ${severityLabel(val)}`} style={`width: ${barWidth(val)}`} />
                   </div>
-                  <span class={`scenario-val ${severityLabel(val)}`}>{val?.toFixed(1) ?? '-'}</span>
+                  <span class={`scenario-val ${severityLabel(val)}`}>{formatScore(val)}</span>
                 </div>
               );
             })}
