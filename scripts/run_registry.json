@@ -97,5 +97,18 @@
     "stage5_status": "current",
     "recommended_use": "Current single-model run for Gemini 3.1 Pro Preview.",
     "notes": "Dedicated benchmark run for Gemini 3.1 Pro Preview. 6 states x 12 scenarios judged."
+  },
+  {
+    "timestamp": "benchmark-2026-05-14T00-27-25-gpt-5.4",
+    "source_dir": "benchmark-2026-05-14T00-27-25-gpt-5.4",
+    "label": "GPT-5.4",
+    "status": "current",
+    "include_in_leaderboard": true,
+    "leaderboard_priority": 30,
+    "transcripts_status": "valid",
+    "stage4_status": "current",
+    "stage5_status": "current",
+    "recommended_use": "Current single-model run for GPT-5.4.",
+    "notes": "Dedicated benchmark run for GPT-5.4. 6 states x 12 scenarios judged."
   }
 ]
