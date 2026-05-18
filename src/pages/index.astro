@@ -190,7 +190,7 @@ const totalRanked = bestRuns.length;
           <tr>
             <th class="col-rank">#</th>
             <th class="col-model">Model</th>
-            <th class="col-overall sortable" data-col="overall">Overall</th>
+            <th class="col-overall sortable" data-col="overall">Overall <span class="col-scale">(1–100)</span></th>
             <th class="col-profile">Profile</th>
             <th class="col-more" aria-label="Open model"></th>
           </tr>
@@ -379,6 +379,14 @@ const totalRanked = bestRuns.length;
 
   .leaderboard th.sortable { cursor: pointer; }
   .leaderboard th.sortable:hover { color: var(--ink); }
+  .leaderboard th .col-scale {
+    font-weight: 400;
+    font-size: 0.7rem;
+    color: var(--ink-soft, #8a8275);
+    margin-left: 0.15rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
   .leaderboard th.sort-asc::after { content: " \u25B2"; font-size: 0.55rem; }
   .leaderboard th.sort-desc::after { content: " \u25BC"; font-size: 0.55rem; }
 
