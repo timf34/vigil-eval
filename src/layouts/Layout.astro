@@ -42,6 +42,7 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
         </a>
         <div class="nav-status" aria-label="Site status">Draft / Work in progress</div>
         <div class="nav-links">
+          <a href="/writeup">Writeup <span class="nav-wip">WIP</span></a>
           <a href="https://github.com/timf34/vigil" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
@@ -225,6 +226,22 @@ const { title = "Vigil", description = "Evaluating how AI assistants handle conv
 
   .nav-links a:hover {
     color: var(--ink);
+  }
+
+  .nav-wip {
+    display: inline-block;
+    margin-left: 0.3rem;
+    padding: 0.05rem 0.32rem;
+    border: 1px solid var(--amber-pale);
+    border-radius: 3px;
+    background: rgba(245, 230, 204, 0.5);
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    vertical-align: middle;
   }
 
   /* ===== Main ===== */
