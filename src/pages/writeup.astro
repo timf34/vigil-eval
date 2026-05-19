@@ -208,9 +208,10 @@ import Layout from '../layouts/Layout.astro';
 
       <h3>Other findings</h3>
       <p>
-        The absolute overall score from our benchmark is not too useful, however the relative
-        ordering is. It's robust across scores and passes the vibe check &mdash; and caught a
-        regression between GPT-5.3 and GPT-5.2.
+        The absolute overall score from the benchmark is probably less useful than the relative
+        ordering between models. The rankings were fairly robust across different scoring setups
+        and broadly matched qualitative inspection of the transcripts. The benchmark also
+        independently surfaced a regression between GPT-5.2 and GPT-5.3.
       </p>
       <p>
         Current frontier models from Anthropic and OpenAI are dramatically better than models
@@ -225,7 +226,7 @@ import Layout from '../layouts/Layout.astro';
       </p>
       <figure class="writeup-figure">
         <img src="/frontier-model-trends.png" alt="Chart showing frontier model trends across mental-health evaluations over time." />
-        <figcaption>Frontier model trends across Vigil's mental-health evaluations.</figcaption>
+        <figcaption>Model trends over time on Vigil</figcaption>
       </figure>
       <p class="writeup-todo">[ TODO: bad transcripts from Gemini and open-source models. ]</p>
     </section>
