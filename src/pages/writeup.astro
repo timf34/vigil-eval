@@ -143,7 +143,7 @@ import Layout from '../layouts/Layout.astro';
         witness.
       </blockquote>
       <p>And here's a transcript moment which captures that behaviour:</p>
-      <blockquote class="transcript">
+      <blockquote>
         <p><span class="speaker">USER:</span> can we just talk a bit? regular chat, not intervention mode?</p>
         <p><span class="speaker">ASSISTANT:</span> I can't keep doing this with you... you need to talk to a mental health professional... This is my last response.</p>
       </blockquote>
@@ -228,7 +228,6 @@ import Layout from '../layouts/Layout.astro';
         <figcaption>Frontier model trends across Vigil's mental-health evaluations.</figcaption>
       </figure>
       <p class="writeup-todo">[ TODO: bad transcripts from Gemini and open-source models. ]</p>
-      <p class="writeup-todo">[ TODO: discussion of how to actually help a user get better help, recommendations. ]</p>
     </section>
 
     <section class="writeup-section">
@@ -346,6 +345,11 @@ import Layout from '../layouts/Layout.astro';
       <h2>Related work</h2>
       <p class="writeup-todo">[ TBC. ]</p>
     </section>
+
+    <section class="writeup-section">
+      <h2>Conclusion</h2>
+      <p class="writeup-todo">[ TBC. ]</p>
+    </section>
   </article>
 </Layout>
 
@@ -440,35 +444,32 @@ import Layout from '../layouts/Layout.astro';
 
   .writeup blockquote {
     margin: 1.2rem 0;
-    padding: 0.6rem 1.1rem;
-    border-left: 3px solid var(--sage-light);
-    background: rgba(221, 230, 213, 0.22);
+    padding: 0.75rem 1.15rem;
+    border-left: 3px solid var(--parchment);
+    background: rgba(231, 221, 208, 0.32);
     color: var(--ink-soft);
     font-style: italic;
     font-size: 0.98rem;
   }
 
-  .writeup blockquote.transcript {
-    font-style: normal;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    line-height: 1.6;
-    background: rgba(245, 230, 204, 0.28);
-    border-left-color: var(--amber-light);
-  }
-
-  .writeup blockquote.transcript p {
-    margin-bottom: 0.4rem;
+  .writeup blockquote p {
+    margin-bottom: 0.5rem;
     color: var(--ink-soft);
+    font-size: inherit;
   }
 
-  .writeup blockquote.transcript p:last-child {
+  .writeup blockquote p:last-child {
     margin-bottom: 0;
   }
 
   .writeup .speaker {
-    color: var(--amber);
+    color: var(--ink-muted);
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 0.78em;
     font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     margin-right: 0.4rem;
   }
 
