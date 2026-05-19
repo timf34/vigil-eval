@@ -443,13 +443,29 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .writeup blockquote {
-    margin: 1.2rem 0;
-    padding: 0.75rem 1.15rem;
-    border-left: 3px solid var(--parchment);
-    background: rgba(231, 221, 208, 0.32);
+    position: relative;
+    margin: 1.6rem 0;
+    padding: 0.3rem 1.4rem 0.3rem 3.2rem;
+    border: none;
+    background: transparent;
     color: var(--ink-soft);
     font-style: italic;
     font-size: 0.98rem;
+  }
+
+  .writeup blockquote::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.8rem;
+    left: 0.4rem;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 5.2rem;
+    line-height: 1;
+    color: var(--parchment);
+    font-style: normal;
+    pointer-events: none;
+    user-select: none;
   }
 
   .writeup blockquote p {
